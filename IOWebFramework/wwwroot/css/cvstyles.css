@@ -1,0 +1,132 @@
+h1, h2, ul {
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+#top {
+    background: #ffffff
+}
+
+.clear {
+    clear: both;
+}
+
+.sectionContent p {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 1em;
+    line-height: 1.4em;
+    margin: 0;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+#cv {
+    width: 90%;
+    max-width: 800px;
+    background: #ffffff;
+    margin: 30px auto;
+}
+
+.mainDetails {
+    padding: 25px 35px;
+    border-bottom: 2px solid #1093cb;
+    background: #ffffff;
+}
+
+#cv-name h1 {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 2.5em;
+    color: #2a7ab9;
+    margin-bottom: -6px;
+}
+
+#mainArea {
+    padding: 0 40px;
+}
+
+#headshot {
+    width: 15.5%;
+    float: left;
+    margin-right: 30px;
+}
+
+    #headshot img {
+        width: 100%;
+        height: auto;
+    }
+
+#cv-name {
+    float: left;
+}
+
+section.cvSection {
+    padding: 20px 0 0;
+}
+
+    section.cvSection:first-child {
+        border-top: 0;
+    }
+
+    section.cvSection:last-child {
+        padding: 20px 0 10px;
+    }
+
+.sectionTitle {
+    float: left;
+    width: 25%;
+}
+
+.sectionContent {
+    float: right;
+    width: 72.5%;
+}
+
+.titleSection h1 {
+    font-family: 'Open Sans',sans-serif;
+    display: flex;
+    align-items: center;
+    color: #0e4194;
+}
+
+hr {
+    height: 1px;
+    border: none;
+    background-color: #0e4194;
+}
+    /*.titleSection h1:after {
+        content: '';
+        border-top: 1px solid;
+        flex: 1 0 20px;
+        color: #0e4194;
+        margin: 0 0 0 10px;
+    }*/
+
+.sectionContent h2 {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 1.1em;
+    margin-bottom: -2px;
+    color: #0e4194;
+}
+
+p.subDetails {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 0.8em;
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.personInfo {
+    font-family: 'Open Sans',sans-serif;
+    list-style-type: none;
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #444;
+}
+
+ul.personInfo li {
+    margin-bottom: 3px;
+}

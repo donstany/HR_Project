@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true
+  },
+  "exclude": ["wwwroot/lib"],  //ignore lib folders, we will get IntelliSense via ATA
+  "typeAcquisition": {
+    "enable": true,
+    "include": []  //TODO KS Maybe we need to add "Rotativa" here
+  }
+}

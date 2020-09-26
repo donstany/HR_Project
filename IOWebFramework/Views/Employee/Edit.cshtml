@@ -1,0 +1,340 @@
+﻿@model IOWebFramework.Core.Models.Employees.EmployeeViewModel
+
+@{
+    ViewData["Title"] = "Служител";
+    string avatar = (Model.UserDetailDTO.Photo == null || !(Model.UserDetailDTO?.Photo).Any()) ? Url.Content("~/img/avatar.png") : $"data:image/png;base64,{Convert.ToBase64String(Model.UserDetailDTO.Photo)}";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        @Html.ValidationSummary()
+        @*<input type="submit" id="SyncWithADBtn" value="Синхронизирай с Активната Директория" class="btn btn-success" />*@
+        <hr />
+        <form asp-action="Edit" method="post">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.PID)
+
+
+            <div class="row">
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                    <input class="form-control" id="EmailInAd" placeholder="Въведете служебен Email от Активната Директория " />
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                    <input class="btn btn-success" id="SyncWithADBtnByEmail" type="button" value="Синхронизирай" title="Синхронизирай с Активната Директория" />
+                </div>
+            </div>
+
+
+            <hr />
+
+            <div id="EmployeePanel">
+
+                <div id="AdSubPanel">
+                    <div class="callout callout-info">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Данни извлечени от Активната Директория, актуални към момента на синхронизиране</h6>
+                    </div>
+
+                    <img class="profile-user-img img-responsive img-bordered user-img" id="UserDetailDTO_Photo_Img" src="@avatar">
+
+                    @Html.HiddenFor(x => x.PhotoBase64)
+                    <div class="row">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.UserDetailDTO.FullName" class="control-label" readonly></label>
+                            <input asp-for="@Model.UserDetailDTO.FullName" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.Position" class="control-label" readonly></label>
+                            <input asp-for="@Model.Position" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.Branch" class="control-label" readonly></label>
+                            <input asp-for="@Model.Branch" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.Department" class="control-label" readonly></label>
+                            <input asp-for="@Model.Department" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.Email" class="control-label" readonly></label>
+                            <input asp-for="@Model.Email" class="form-control" readonly />
+                        </div>
+                        <div class="form-group form-group col-lg-6 col-md-6 col-sm-6">
+                            <label asp-for="@Model.Telephone" class="control-label" readonly></label>
+                            <input asp-for="@Model.Telephone" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="@Model.Address" class="control-label" readonly></label>
+                        <input asp-for="@Model.Address" class="form-control" readonly />
+                    </div>
+                </div>
+                <hr />
+                <div id="HrSubPanel">
+                    <div class="callout callout-info">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Данни, които се попълват от служител от Отдел "Човешки Ресурси" при назначаване на служител</h6>
+                    </div>
+                    <div class="row">
+                        @if (Model.IsEditMode)
+                        {
+                            <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.UserDetailDTO.PID, new { @readonly = true })</div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.UserDetailDTO.PID)</div>
+                        }
+                        <div class="col-lg-6col-md-6 col-sm-6">@Html.EditorFor(model => model.Td)</div>
+                    </div>
+                    <div class="row">
+                        <p><strong> Предходен трудов стаж в ИО</strong></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4"> @Html.EditorFor(x => x.ExpirienceInIOYearsId, "GenericDropDown") </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">@Html.EditorFor(x => x.ExpirienceInIOMonthsId, "GenericDropDown") </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4"> @Html.EditorFor(x => x.ExpirienceInIODaysId, "GenericDropDown") </div>
+                    </div>
+                    <div class="row">
+                        <p><strong> Предходен трудов стаж извън ИО</strong></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4"> @Html.EditorFor(x => x.ExpirienceOutIOYearsId, "GenericDropDown") </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">@Html.EditorFor(x => x.ExpirienceOutIOMonthsId, "GenericDropDown") </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4"> @Html.EditorFor(x => x.ExpirienceOutIODaysId, "GenericDropDown") </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.HireDate, "DateTime")</div>
+                        @*<div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.FireDate, "DateTime")</div>*@
+                        <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.IsActive, "Toggle")</div>
+                        <div class="col-lg-6 col-md-6 col-sm-6"></div>
+                    </div>*@
+                </div>
+                <br />
+                <hr />
+                <div id="HrSubPanelLeaving">
+                    <div class="callout callout-info">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Данни, които се попълват от служител от Отдел "Човешки Ресурси" при освобождаване на служител</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.FireDate, "DateTime")</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">@Html.EditorFor(model => model.IsActive, "Toggle")</div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 20px">
+                    <input type="submit" value="Запис" class="btn btn-success" />
+                    <a asp-action="Index" asp-controller="Employee" class="btn btn-danger">Назад</a>
+                    @*<a asp-action="Index" asp-route-nomenclatureName="@TempData.Peek(" NomenclatureName")" asp-route-title="@TempData.Peek(" Title")" class="btn btn-danger btn-flat">Назад</a>*@
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Shorthand for $( document ).ready()
+        $(function () {
+             @if (Model.IsEditMode)
+             {
+                    @:$("#UserDetailDTO_PID").prop('readonly', true);
+             }
+         });
+    </script>
+
+    <script>
+        $("#PersonDdl").on("change", function () {
+            //$('#errorMessage').html('');
+            $.post('/Employee/GetDataFromDbPersonDetails', { PersonID: $("#PersonId").val() })
+                .done(function (data) {
+                    if (data.error) {
+                        //$('#errorMessage')
+                        //    .html('<div class="row text-center"><div class="col-sm-12"><div class="alert alert-danger no-margin-bottom"><button data-dismiss="alert" class="close">×</button><i class="glyphicon glyphicon-ban-circle"></i>' +
+                        //    data.error + '</div></div></div>');
+                        //Swal-> error
+                    } else {
+
+                        $('#UserDetailDTO_FullName').val(data.userDetailDTO.fullName);
+                        $('#UserDetailDTO_Position').val(data.userDetailDTO.position);
+                        $('#UserDetailDTO_Branch').val(data.userDetailDTO.branch);
+                        $('#UserDetailDTO_Department').val(data.userDetailDTO.department);
+                        $('#UserDetailDTO_Email').val(data.userDetailDTO.email);
+                        $('#UserDetailDTO_Telephone').val(data.userDetailDTO.telephone);
+                        $('#UserDetailDTO_Address').val(data.userDetailDTO.address);
+
+                        $('#Td').val(data.td);
+                        $('#FileContentId').val(data.fileContentId);
+                        $('#FireDate').val(data.fireDate);
+                        $('#HireDate').val(data.hireDate);
+                        $('#PreviuosExperience').val(data.previuosExperience);
+                        $('#PreviuosExperienceInIs').val(data.previuosExperienceInIs);
+                        $('#PreviuosExperienceSummed').val(data.previuosExperienceSummed);
+
+                        $('#BranchId').val(data.branchId);
+                        $('#DepartmentId').val(data.departmentId);
+                        $('#PositionId').val(data.positionId);
+                        $('#IsActive').val(data.isActive);
+
+                    }
+                });
+        });
+    </script>
+
+    <script>
+        $("#SyncWithADBtnByEmail").on("click", function () {
+            var url = '@Url.Action("SyncWithADByEmail","Employee")';
+            $('#SyncWithADBtnByEmail').attr("disabled", true);
+            $('#SyncWithADBtnByEmail').val("Моля изчакайте...");
+            $.getJSON(url, { EmailInAd: $("#EmailInAd").val().trim() }, function (data) {
+                debugger;
+                if (data.isExistingActiveEmployee) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Успех!',
+                        text: 'ВНИМАНИЕ! В системата вече има активен служител с посоченият е-mail!',
+                        footer: 'Успешно синхронизиране с Активната Директория! '
+                    }).then(function () {
+
+                        $('#UserDetailDTO_FullName').val(data.userDetailDTO.fullName);
+                        $('#Position').val(data.userDetailDTO.position);
+                        $('#Branch').val(data.userDetailDTO.branch);
+                        $('#Department').val(data.userDetailDTO.department);
+                        $('#Email').val(data.userDetailDTO.email);
+                        $('#Telephone').val(data.userDetailDTO.telephone);
+                        $('#Address').val(data.userDetailDTO.address);
+
+                        $('#PhotoBase64').val(data.userDetailDTO.photo);
+                        var srcPhoto = "data:image/gif;base64," + data.userDetailDTO.photo;
+                        $('#UserDetailDTO_Photo_Img').attr("src", srcPhoto);
+
+                    });
+                    return;
+                }
+
+                if (data.userDetailDTO.isSyncSuccessfully == false || data.userDetailDTO.email == null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Не е намерен служител с въведения имейл!',
+                        text: 'Въведен е несъществуващ/невалиден имейл!',
+                        footer: 'Моля опитайте отново!'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Успех!',
+                        text: 'Успешно синхронизиране с Активната Директория!',
+                    })
+                        .then(function () {
+
+                            $('#UserDetailDTO_FullName').val(data.userDetailDTO.fullName);
+                            $('#Position').val(data.userDetailDTO.position);
+                            $('#Branch').val(data.userDetailDTO.branch);
+                            $('#Department').val(data.userDetailDTO.department);
+                            $('#Email').val(data.userDetailDTO.email);
+                            $('#Telephone').val(data.userDetailDTO.telephone);
+                            $('#Address').val(data.userDetailDTO.address);
+
+                            $('#PhotoBase64').val(data.userDetailDTO.photo);
+                            var srcPhoto = "data:image/gif;base64," + data.userDetailDTO.photo;
+                            $('#UserDetailDTO_Photo_Img').attr("src", srcPhoto);
+
+                        });
+                }
+
+                })
+                .fail(function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Възникна грешка при свързването с Активната Директория!',
+                        //text: 'Въведеният email не съществува в системата!',
+                        footer: 'Моля опитайте отново да синхронизирате!'
+                    });
+                })
+                .always(function () {
+                    $('#SyncWithADBtnByEmail').attr("disabled", false);
+                    $('#SyncWithADBtnByEmail').val("Синхронизиране");
+                });
+        });
+    </script>
+
+    <script>
+            $('#BranchId').change(function () {
+                var url = '@Url.Action("GetDepartmentsByBranchId","Employee")';
+                var ddlsource = "#BranchId";
+                $.getJSON(url, { BranchId: $(ddlsource).val() }, function (data) {
+                    var items = '';
+                    $("#DepartmentId").empty();
+                    $.each(data, function (i, subcategory) {
+                        items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                    });
+                    $('#DepartmentId').html(items);
+                });
+            });
+    </script>
+
+    <script>
+        $('#isInactiveEmployee').change(function () {
+            var isChecked = $('#isInactiveEmployee').is(':checked');
+            if (isChecked) {
+                var url = '@Url.Action("GetNameDropDownByCheckBoxValue","Employee")';
+                $.getJSON(url, { isInactiveEmployee : isChecked }, function (data) {
+                    var items = '';
+                    $("#PersonId").empty();
+                    $.each(data, function (i, subcategory) {
+                        items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                    });
+                    $('#PersonId').html(items);
+                });
+            }
+            else {
+                var url = '@Url.Action("GetNameDropDownByCheckBoxValue","Employee")';
+                $.getJSON(url, { isInactiveEmployee : isChecked }, function (data) {
+                    var items = '';
+                    $("#PersonId").empty();
+                    $.each(data, function (i, subcategory) {
+                        items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                    });
+                    $('#PersonId').html(items);
+                });
+            }
+
+        });
+
+        $('#Td').on('focusout', function () {
+            var tdNumber = $(this).val();
+            var that = $(this);
+            if (tdNumber.trim() !== "") {
+                var url = '@Url.Action("CheckTdIsUnique","Employee")';
+                $.getJSON(url, { TdNumber: tdNumber }, function (data) {
+                    if (data == false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Грешка при въвеждане!',
+                            text: 'Въведеният TД номер съществува в системата!',
+                            footer: 'Въведете нов TД номер!'
+                        })
+                            .then(function () {
+                                //window.setTimeout(function () {
+                                //    document.getElementById("Td").focus();
+                                //},0)
+                                Swal.close();
+                                $('#Td').val("");
+                                $('#Td').focus();
+                            })
+                    }
+                });
+            }
+        }
+        );
+
+    </script>
+}

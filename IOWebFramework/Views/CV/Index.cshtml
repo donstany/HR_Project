@@ -1,0 +1,175 @@
+﻿@model IOWebFramework.Core.Models.Cv.CvViewModel
+@{Layout = null;
+        string avatar = string.IsNullOrEmpty(Model.PhotoBase64) ? Url.Content("~/img/avatar.png") : String.Format("data:image/png;base64,{0}", Model.PhotoBase64);
+    ;
+    }
+<!DOCTYPE html>
+<html class="cvhtml">
+<head>
+    <title>Автобиография</title>
+
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="UTF-8">
+
+    <link href="~/css/cvstyles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/adminlte/plugins/fontawesome-free/css/all.min.css">
+</head>
+<body id="top">
+    <div id="cv" class="instaFade">
+        <div class="mainDetails">
+            <div id="cv-name">
+                <h1 class="quickFade delayTwo">Автобиография</h1>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div id="mainArea" class="quickFade delayFive">
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>ЛИЧНА ИНФОРМАЦИЯ</h1>
+                    <hr />
+                    <br />
+                    <div id="headshot">
+                        <img src="@avatar" alt="cvphoto" />
+                    </div>
+                </div>
+
+                <div class="sectionContent">
+                    <ul class="personInfo">
+                        <li>@Model.FullName</li>
+                        <br />
+                        <li><i class="fas fa-map-marker-alt"></i> @(Model.Address == null ? "Няма данни" : Model.Address == String.Empty ? "Няма данни" : Model.Address)</li>
+                        <li><i class="fas fa-mobile-alt"></i> @(Model.PhoneNumber == null ? "Няма данни" : Model.PhoneNumber == String.Empty ? "Няма данни" : Model.PhoneNumber)</li>
+                        <li><i class="fas fa-envelope"></i> @(Model.Email == null ? "Няма данни" : Model.Email == String.Empty ? "Няма данни" : Model.Email)</li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </section>
+
+
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>ТРУДОВ СТАЖ</h1>
+                    <hr />
+                </div>
+                <div class="sectionContent">
+                    <article>
+                        <h2>Трудов стаж извън "Информационно обслужване" АД</h2>
+                        <p>@Model.FormatedPreviuosExperience</p>
+                    </article>
+
+                    <article>
+                        <h2>Трудов стаж в "Информационно обслужване" АД</h2>
+                        <p>@Model.FormatedPreviuosExperienceInIs</p>
+                    </article>
+
+                    <article>
+                        <h2>Трудов стаж общо</h2>
+                        <p>@Model.FormatedPreviuosExperienceSummed</p>
+                    </article>
+                </div>
+                <div class="clear"></div>
+            </section>
+
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>ОБРАЗОВАНИЕ</h1>
+                    <hr />
+                </div>
+
+                <div class="sectionContent">
+                    @foreach (var educationDto in Model.EducationDtos)
+                    {
+                        <article>
+                            <h2>@educationDto.EducationInstitutionName</h2>
+                            <p class="subDetails">@educationDto.DegreeName</p>
+                            <p>Специалност "@educationDto.SpecialtyName"</p>
+                        </article>
+                    }
+                </div>
+                <div class="clear"></div>
+            </section>
+
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>ОБУЧЕНИЯ</h1>
+                    <hr />
+                </div>
+
+                <div class="sectionContent">
+                    @foreach (var trainingDto in Model.TrainingDtos)
+                    {
+                        <article>
+                            <h2>@trainingDto.TrainingName</h2>
+                            @*<p class="subDetails">AZ-900</p>*@
+                            @if (trainingDto.DateEnd == null)
+                            {
+                                <p class="subDetails">Валидност: @trainingDto.DateStart.ToString("dd.MM.yyyy") - До момента</p>
+                            }
+                            else
+                            {
+                                <p class="subDetails">Валидност: @trainingDto.DateStart.ToString("dd.MM.yyyy") - @trainingDto.DateEnd?.ToString("dd.MM.yyyy")</p>
+                            }
+
+                            <p>Обучителен център: @trainingDto.TrainingCenterName</p>
+                        </article>
+                    }
+                </div>
+                <div class="clear"></div>
+            </section>
+
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>СЕРТИФИКАТИ</h1>
+                    <hr />
+                </div>
+
+                <div class="sectionContent">
+                    @foreach (var certificateDto in Model.CertificateDtos)
+                    {
+                        <article>
+                            <h2>@certificateDto.CertificateName</h2>
+                            @if (certificateDto.DateEnd == null)
+                            {
+                                <p class="subDetails">Валидност: @certificateDto.DateStart.ToString("dd.MM.yyyy") - До момента</p>
+                            }
+                            else
+                            {
+                                <p class="subDetails">Валидност: @certificateDto.DateStart.ToString("dd.MM.yyyy") - @certificateDto.DateEnd?.ToString("dd.MM.yyyy")</p>
+                            }
+                            <p>Тип на сертификата: @certificateDto.CertificateType</p>
+                        </article>
+                    }
+                </div>
+                <div class="clear"></div>
+            </section>
+
+            <section class="cvSection">
+                <div class="titleSection">
+                    <h1>ПРОЕКТИ</h1>
+                    <hr />
+                </div>
+
+                <div class="sectionContent">
+                    @foreach (var projectDto in Model.ProjectDtos)
+                    {
+                        <article>
+                            <h2>@projectDto.ProjectFullName (@projectDto.ProjectName)</h2>
+                            @if (projectDto.DateEnd == null)
+                            {
+                                <p class="subDetails">Работа по проекта от: @projectDto.DateStart.ToString("dd.MM.yyyy") - До момента</p>
+                            }
+                            else
+                            {
+                                <p class="subDetails">Работа по проекта от: @projectDto.DateStart.ToString("dd.MM.yyyy") - @projectDto.DateEnd?.ToString("dd.MM.yyyy")</p>
+                            }
+                            <p>Роля в проекта: @projectDto.ProjectRole</p>
+                        </article>
+                    }
+                </div>
+                <div class="clear"></div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

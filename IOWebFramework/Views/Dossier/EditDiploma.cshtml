@@ -1,0 +1,188 @@
+﻿@model DiplomaViewModel
+@using IOWebFramework.Core.Models.Attachments
+@using IOWebFramework.Core.Models.Dossier;
+
+@{
+    ViewData["Title"] = "Диплома";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-outline card-primary">
+            <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId"><i class="fa fa-address-card"></i>  @Model.BreadcrumbInfo.Title</a>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditDiploma" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                <partial name="_SaveFormContent" model="@("#saveContainer")" />
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.PersonId)
+                @Html.HiddenFor(x => x.FileContentId)
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.DegreeId, "GenericDropDown")</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.EducationInstitutionId, "GenericDropDown")</div>
+                    @if (Model.IsAddingMode)
+                    {
+                        <div title="Добави Висше учебно заведение към номенклатурата" class="col-lg-6" style="margin-top:31.5px">
+                            <a href="#" onclick="showEducationInstitutionForm(); return false;" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                Добави към номенклатурата
+                            </a>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.SchoolProfileId, "GenericDropDown")</div>
+                    <div class="col-lg-6" title="Въведете поне два символа" id="specialty">@Html.EditorFor(x => x.SpecialtyId, "Specialty")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.Grade, "String")</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.RegisterNumber, "String")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.SuccessfulExam, "DateTimeWithTime")</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.IssueDate, "DateTimeWithTime")</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @await Html.PartialAsync("_AttachedDocumentsTablePartial", new AttachedDocumentsTableViewModel
+                {
+                    DocumentId = Model.Id,
+                    DocumentType = IOWebFramework.Shared.Common.DocumentTypesConstant.Diploma,
+                    HideDeleteButton = false
+                })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Запис" class="btn btn-success" />
+                <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId" asp-route-tabToOpen="#nav-diploma-tab" class="btn btn-danger">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <script id="addEducationInstitutionTemplate" type="text/x-handlebars-template">
+        <form id="educationInstitutionForm" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="code" class="col-form-label">Код</label>
+                <input type="text" class="form-control" id="code" required>
+                <div class="invalid-feedback">
+                    Полето 'Код' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="educationInstitutionName" class="col-form-label">Име на висше учебно заведение</label>
+                <input type="text" class="form-control" id="educationInstitutionName" required>
+                <div class="invalid-feedback">
+                    Полето 'Име на висше учебно заведение' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-form-label">Описание</label>
+                <textarea class="form-control" id="description"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="isActive" class="custom-control-input" checked />
+                    <label class="custom-control-label" for="isActive">Активен</label>
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" form="educationInstitutionForm">@Html.Raw("Запис")</button>
+            <button type="button" class="btn btn-danger dt-reload" data-dismiss="modal">@Html.Raw("Назад")</button>
+        </div>
+    </script>
+
+    <script>
+        function addEducationInstitution() {
+            var code = $('#code').val().trim();
+            var educationInstitutionName = $('#educationInstitutionName').val().trim();
+            var description = $('#description').val().trim();
+            var isActive = $('#isActive').is(":checked");
+
+            $.post("@Url.Action("AddEducationInstitution", "Dossier")", { code: code, educationInstitutionName: educationInstitutionName, description: description, isActive: isActive })
+                .done(function (result) {
+                    if (result === 'ok') {
+                        HideModalDialog();
+                        setTimeout(function () {window.location.href = '@Url.Action("AddDiploma", "Dossier", new { personId = Model.PersonId})';  }, 0);
+                    }
+                    else {
+                        HideModalDialog();
+                    }
+                })
+                .fail(function (error) {
+                    HideModalDialog();
+                });
+        }
+
+        function showEducationInstitutionForm() {
+            ShowModalDialog("Добавяне на висше учебно заведение към номенклатурата", TemplateToHtml('#addEducationInstitutionTemplate'));
+            modalPopUpValidation(addEducationInstitution);
+        }       
+    </script>
+
+    <script>
+        var degId = $('#DegreeId').val();
+        if (degId == "3") {
+            $('#specialty').hide();
+        }
+        else {
+            $('#specialty').show();
+        }
+        $('#DegreeId').change(function () {
+            if ($('#DegreeId').val() == "3") {
+                $('#specialty').hide();
+            }
+            else {
+                $('#specialty').show();
+                $('#SchoolProfileId').val(null);
+            }
+        })
+        $(document).ready(function () {
+            if ($('#DegreeId').val() == "3") {
+                $('#specialty').hide();
+            }
+            else {
+                $('#specialty').show();
+                $('#SchoolProfileId').val(null);
+            }
+        })
+    </script>
+    <script>
+        $("#SuccessfulExam").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var startDate = new Date(selected.date.valueOf());
+                $('#IssueDate').datepicker('setStartDate', startDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#IssueDate').datepicker('setStartDate', null);
+            });
+
+        $("#IssueDate").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var endDate = new Date(selected.date.valueOf());
+                $('#SuccessfulExam').datepicker('setEndDate', endDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#SuccessfulExam').datepicker('setEndDate', null);
+            });
+    </script>
+
+}

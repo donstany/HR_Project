@@ -1,0 +1,166 @@
+﻿@model IOWebFramework.Core.Models.Attachments.AttachedDocumentViewModel
+
+<style>
+    #modal .btn-file label {
+        margin-bottom: 0
+    }
+
+    /*Auto complete into Modal*/
+    .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
+        z-index: 20000;
+    }
+</style>
+
+
+<div>
+    @* Бутон за стартиране на модал *@
+    <button id="addDocumentModalBtn" type="button" class="btn btn-success btn-flat pull-right" data-toggle="modal" data-target="#modal"><i class="fa fa-plus" aria-hidden="true"></i> Прикачи документ</button>
+</div>
+
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_label">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Прикачване на Документ</h4>
+            </div>
+            <div class="modal-body">
+                @Html.HiddenFor(m => m.FileContentId)
+                @Html.HiddenFor(m => m.DocumentId)
+                @Html.HiddenFor(m => m.DocumentType)
+                @*@Html.HiddenFor(m => m.IsActive)*@
+
+                @*@Html.EditorFor(m => m.AttachmentTypeId, "GenericDropDown")*@
+                <div class="actions hidden">
+                    <div class="row">
+                        <div class="col-md-4 number-field">
+                            @Html.EditorFor(m => m.Number)
+                            <span class="text-danger validation-message" id="NumberValidation"></span>
+                        </div>
+                        <div class="col-md-8 description-field">
+                            @Html.EditorFor(m => m.Description, "StringTextArea")
+                            <span class="text-danger validation-message" id="DescriptionValidation"></span>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.EditorFor(m => m.Date)
+                            <span class="text-danger validation-message" id="DateValidation"></span>
+                        </div>
+                    </div>
+                </div>
+                @* Файл с чекче *@
+                <div class="form-group file hidden">
+                    <div class="row">
+                        @*<div class="col-md-4">
+                            @Html.EditorFor(m => m.HasFile)
+                        </div>*@
+                        <div class="col-md-4  file__toggable hidden">
+                            <div class="btn-group">
+                                <a class="btn btn-file btn-info">
+                                    <input type="file" id="upload_file" class="form-control" />
+                                    <label for="upload_file">Прикачи</label>
+                                </a>
+                                <button class="btn btn-danger file__close hidden">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-success" id="saveBtn"><i class="fa fa-check-circle" aria-hidden="true"></i> Изпрати</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //$(document).on('change', '#HasFile', function (e) {
+    //    $('.file__toggable').toggleClass('hidden');
+    //});
+    $(document).on('click', '#addDocumentModalBtn', function (e) {
+        $('.validation-message').text("");
+        $('#Number').val("");
+        $('#Description').val("");
+        $('#Date').val("");
+    });
+
+    $(document).on('click', '#saveBtn', function () {
+
+        $('.validation-message').text("");
+        var attachmentType = $('#AttachmentTypeId').val();
+        if (attachmentType === "1" || attachmentType === "2") {
+            if ($('#Date').val() === "") {
+                $('#DateValidation').text("Моля въведете 'Дата'");
+            }
+            $('#DescriptionValidation').text("");
+            if ($('#Number').val() === "") {
+                $('#NumberValidation').text("Моля въведете 'Номер'");
+            }
+            if ($('#ActivityId').val() === "") {
+                $('#ActivityIdValidation').text("Моля въведете 'Медицинска дейност'");
+            }
+        }
+        else if (attachmentType === "3" || attachmentType === "4") {
+            if ($('#Date').val() === "") {
+                $('#DateValidation').text("Моля въведете 'Дата'");
+            }
+            if ($('#Description').val() === "") {
+                $('#DescriptionValidation').text("Моля въведете 'Описание'");
+            }
+            $('#NumberValidation').text("");
+            $('#ActivityIdValidation').text("");
+        }
+        else {
+            $('.validation-message').text("");
+        }
+
+        var isValid = true;
+        $('.validation-message').each(function (index, element) {
+            if ($(element).text() !== "") {
+                isValid = false;
+            }
+        })
+        if (!isValid) {
+            return false;
+        }
+
+        //запазваме в променлива дали полето е избрано, след което я ползваме в AJAX заявката
+        //var hasFileIsChecked = document.getElementById('HasFile').checked;
+
+        $.post("@Url.Action("AddNewAttachedDocument", "File")",
+            {
+                //documentId: @Model.DocumentId,
+                //documentType: @Model.DocumentType,
+                //attachmentTypeId: $('#AttachmentTypeId').val(),
+                number: $('#Number').val(),
+                attachmentDate: $('#Date').val(),
+                //hasFile: hasFileIsChecked,
+                description: $('#Description').val(),
+                //activityId: $('#ActivityId').val()
+            }
+        ).done(function (result) {
+            if (result === "OK") {
+                $('.validation-message').text("");
+                //$('#ActivityId').val("");
+                //$('#ActivityId_activity').val("");
+                $('#Number').val("");
+                $('#Description').val("");
+                $('#Date').val("");
+
+                $('#modal').modal('toggle');
+            } else {
+
+            }
+            });
+    });
+
+    $(document).on('change.upload_file', '#upload_file', function (e) {
+        var value = e.target.value;
+        $('.file__toggable .file__close')[value ? 'removeClass' : 'addClass']('hidden');
+    });
+    $(document).on('click.file__close', '.file__toggable .file__close', function (e) {
+        $('.file__toggable #upload_file').val('').trigger('change');
+    });
+</script>
+

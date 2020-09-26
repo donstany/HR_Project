@@ -1,0 +1,98 @@
+﻿@model IOWebFramework.Core.Models.Dossier.CertificateViewModel
+@using IOWebFramework.Core.Models.Attachments
+
+@{
+    ViewData["Title"] = "Сертификат";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-outline card-primary">
+            <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId"><i class="fa fa-address-card"></i>  @Model.BreadcrumbInfo.Title</a>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditCertificate" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                <partial name="_SaveFormContent" model="@(" #saveContainer")" />
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.PersonId)
+                @Html.HiddenFor(x => x.FileContentId)
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.CertificateNameIssuerId, "CertificateNameIssuer")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.CertificateTypeId, "GenericDropDown")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.CertificateNameIssuerId, "GenericDropDown")</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        @Html.EditorFor(x => x.Grade)
+                    </div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.Level)</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.RegNumber)</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.DateStart, "DateTimeWithTime")</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.DateEnd, "DateTimeWithTime")</div>
+                </div>
+            </div>
+            <div class="form-group">
+                @await Html.PartialAsync("_AttachedDocumentsTablePartial", new AttachedDocumentsTableViewModel
+                {
+                    DocumentId = Model.Id,
+                    DocumentType = IOWebFramework.Shared.Common.DocumentTypesConstant.Certificate,
+                    HideDeleteButton = false
+                })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Запис" class="btn btn-success" />
+                <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId" asp-route-tabToOpen="#nav-certificate-tab" class="btn btn-danger">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        //$(document).on('change', '#CertificateTypeId', function () {
+
+        //});
+
+        $("#DateStart").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var startDate = new Date(selected.date.valueOf());
+                $('#DateEnd').datepicker('setStartDate', startDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#DateEnd').datepicker('setStartDate', null);
+            });
+
+        $("#DateEnd").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var endDate = new Date(selected.date.valueOf());
+                $('#DateStart').datepicker('setEndDate', endDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#DateStart').datepicker('setEndDate', null);
+            });
+    </script>
+}

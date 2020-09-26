@@ -1,0 +1,122 @@
+﻿@model IOWebFramework.Core.Models.ProjectDetail.TechnologyViewModel
+
+@{
+    ViewData["Title"] = "Технологии";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditTechnology" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                <partial name="_SaveFormContent" model="@("#saveContainer")" />
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.ProjectId)
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.TechnologyId, "GenericDropDown")</div>
+                    <div title="Добави Технология към номенклатурата" class="col-lg-6" style="margin-top:31.5px">
+                        <a href="#" onclick="ShowTechnologyForm(); return false;" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                            Добави към номенклатурата
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Запис" class="btn btn-success" />
+                <a asp-action="Index" asp-controller="ProjectDetail" asp-route-projectId="@ViewBag.ProjectId" asp-route-tabToOpen="#nav-technology-tab" class="btn btn-danger">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+        $('#TechnologyId').on('change', function () {
+            var technologyId = $(this).val();
+            var project = @ViewBag.ProjectId;
+            if (technologyId !== "") {
+                var url = '@Url.Action("CheckProjectTechnologyAreUnique","ProjectDetail")';
+                $.getJSON(url, { technologyId: technologyId, projectId: project }, function (data) {
+                    if (data == false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Грешка при въвеждане!',
+                            text: 'Въведената технология за този проект вече съществува в системата!',
+                            footer: 'Въведете нова технология!'
+                        })
+                            .then(function () {
+                                //window.setTimeout(function () {
+                                //    document.getElementById("Td").focus();
+                                //},0)
+                                Swal.close();
+                                $('#TechnologyId').val("");
+                                $('#TechnologyId').focus();
+                            })
+                    }
+                });
+            }
+        }
+    );
+</script>
+
+<script id="addTechnologyTemplate" type="text/x-handlebars-template">
+    <form id="TechnologyForm" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="code" class="col-form-label">Код</label>
+            <input type="text" class="form-control" id="code" required>
+            <div class="invalid-feedback">
+                Полето 'Код' е задължително!
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="technologyName" class="col-form-label">Име на технология</label>
+            <input type="text" class="form-control" id="technologyName" required>
+            <div class="invalid-feedback">
+                Полето 'Име на технология' е задължително!
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description" class="col-form-label">Описание</label>
+            <textarea class="form-control" id="description"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" id="isActive" class="custom-control-input" checked />
+                <label class="custom-control-label" for="isActive">Активен</label>
+            </div>
+        </div>
+    </form>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success" form="TechnologyForm">@Html.Raw("Запис")</button>
+        <button type="button" class="btn btn-danger dt-reload" data-dismiss="modal">@Html.Raw("Назад")</button>
+    </div>
+</script>
+
+<script>
+        function AddTechnology() {
+            var code = $('#code').val().trim();
+            var technologyName = $('#technologyName').val().trim();
+            var description = $('#description').val().trim();
+            var isActive = $('#isActive').is(":checked");
+
+            $.post("@Url.Action("AddTechnologyFromPopUp", "ProjectDetail")", { code: code, technologyName: technologyName, description: description, isActive: isActive })
+                .done(function (result) {
+                    if (result === 'ok') {
+                        HideModalDialog();
+                        setTimeout(function () {window.location.href = '@Url.Action("AddTechnology", "ProjectDetail", new { projectId = Model.ProjectId})';  }, 0);
+                    }
+                    else {
+                        HideModalDialog();
+                    }
+                })
+                .fail(function (error) {
+                    HideModalDialog();
+                });
+        }
+
+        function ShowTechnologyForm() {
+            ShowModalDialog("Добавяне технология към номенклатурата", TemplateToHtml('#addTechnologyTemplate'));
+            modalPopUpValidation(AddTechnology);
+        }
+</script>

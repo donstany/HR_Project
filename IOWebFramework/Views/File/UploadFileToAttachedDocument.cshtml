@@ -1,0 +1,66 @@
+﻿@model  IOWebFramework.Core.Models.Attachments.AttachedDocumentViewModel
+
+<form id="FileUploadForm" action="@Url.Action("UploadFileToAttachedDocument", "File", new { area = "Internal"})" method="post" enctype="multipart/form-data">
+    @Html.HiddenFor(m => m.Id)
+    <div class="form-group file">
+        <div class="row margin-bottom">
+            <div class="col-md-6  file__toggable">
+                <div class="btn-group">
+                    <a class="btn btn-file btn-info btn-flat">
+                        <input type="file" id="upload_file" name="upload_file" class="form-control" />
+                        <label for="upload_file" class="margin-bottom-none"><i class="fa fa-search"></i>  <span id="FileNameLabel">Избери файл</span></label>
+                    </a>
+                    <button class="btn btn-danger btn-flat file__close hidden">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-success btn-flat" id="saveBtn"><i class="fa fa-check-circle" aria-hidden="true"></i> Прикачи</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <span id="errorMessage" class="text-center"></span>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    //$(document).on('change', '#upload_file', function () {
+    //    if ($('#upload_file').val() !== "") {
+    //        var fileNameArray = $('#upload_file').val().split(/[\\\/]+/);
+    //        $('#FileNameLabel').text(fileNameArray[fileNameArray.length - 1]);
+    //    } else {
+    //        $('#FileNameLabel').text(" Избери файл");
+    //    }
+    //});
+    $(function () {
+        $('form#FileUploadForm').ajaxForm({
+            beforeSend: function (xhr) {
+                $('#errorMessage').text('').css('background', '').css('color', 'white').removeClass("form-control");
+                $('#saveBtn').hide();
+            },
+            complete: function (xhr) {
+                $('#saveBtn').show();
+                if (xhr.responseText === "OK") {
+                    ReloadFiles();
+                    HideModalDialog();
+                    messageHelper.ShowSuccessMessage("Файлът е зареден успешно.");
+                    window.scrollTo(0, 0);
+                } else {
+                    $('#errorMessage').text(xhr.responseText).css('background', 'red').css('color', 'white').addClass("form-control");
+                }
+            }
+        });
+    });
+
+    $(document).on('change.upload_file', '#upload_file', function (e) {
+        var value = e.target.value;
+        $('.file__toggable .file__close')[value ? 'removeClass' : 'addClass']('hidden');
+    });
+    $(document).on('click.file__close', '.file__toggable .file__close', function (e) {
+        $('.file__toggable #upload_file').val('').trigger('change');
+    });
+</script>
+

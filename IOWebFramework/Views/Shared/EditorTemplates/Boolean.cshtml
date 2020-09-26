@@ -1,0 +1,9 @@
+﻿@model bool
+    <div class="form-check">
+        <input asp-for="@Model" class="form-check-input" />
+        <label asp-for="@Model" class="form-check-label">
+            @Html.DisplayNameFor(model => model)
+        </label>
+        <br />
+        <span asp-validation-for="@Model" class="text-danger"></span>
+    </div>

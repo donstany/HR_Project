@@ -1,0 +1,274 @@
+﻿@model IOWebFramework.Core.Models.Project.ProjectMainInfo
+@{
+    var tabToOpen = "";
+    if (ViewBag.TabToOpen != null)
+    {
+        tabToOpen = ViewBag.TabToOpen;
+    }
+}
+
+
+<div class="row">
+    <div class="card card-body bg-light">
+        <div><strong>ДЕТАЙЛИ ЗА ПРОЕКТ:</strong></div>
+        <div>@ViewBag.ProjectName</div>
+    </div>
+</div>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-main-tab" data-toggle="tab" href="#nav-main" role="tab" aria-controls="nav-main" aria-selected="false"><i class="fas fa-info-circle"></i> Основна информация</a>
+        <a class="nav-item nav-link" id="nav-technology-tab" data-toggle="tab" href="#nav-technology" role="tab" aria-controls="nav-technology" aria-selected="false"><i class="fas fa-chalkboard-teacher"></i> Използвани технологии</a>
+        <a class="nav-item nav-link" id="nav-team-tab" data-toggle="tab" href="#nav-team" role="tab" aria-controls="nav-team" aria-selected="false"><i class="fas fa-book-open"></i> Екип по проекта</a>
+    </div>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fadeshow active" id="nav-main" role="tabpanel" aria-labelledby="nav-main-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Основна информация за проекта</h5>
+        </div>*@
+
+        @await Html.PartialAsync("~/Views/Shared/ProjectDetail/_MainInfoTab.cshtml", Model)
+    </div>
+
+    <div class="tab-pane fade" id="nav-technology" role="tabpanel" aria-labelledby="nav-technology-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Технологии, които се използват в проекта</h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12 text-right pb-15">
+                <a asp-action="AddTechnology" asp-route-projectId="@ViewBag.ProjectId" class="btn btn-success">
+                    <i class="fa fa-plus"></i>
+                    Добави Технология
+                </a>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="technologyListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="nav-team" role="tabpanel" aria-labelledby="nav-team-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Екип по проекта </h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12 text-right pb-15">
+                <a asp-action="AddTeam" asp-route-projectId="@ViewBag.ProjectId" class="btn btn-success">
+                    <i class="fa fa-plus"></i>
+                    Добави Участник
+                </a>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="teamListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            var tabToOpen = '@tabToOpen';
+            if (tabToOpen !== null) {
+                $(tabToOpen).trigger('click')
+            }
+
+            var technologyTable = $('#technologyListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("TechnologyListData", "ProjectDetail")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.projectId = @ViewBag.ProjectId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'name',
+                        data: 'name',
+                        title: 'Име',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'description',
+                        data: 'description',
+                        title: 'Описание',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'delete',
+                        data: "id",
+                        title: "",
+                        sortable: false,
+                        searchable: false,
+                        className: "text-center noExport",
+                        "render": function (value) {
+                            return TemplateToHtml('#templateDelete', value); // value will be binded to {{this}} in  Handle bar template, in our case value is Id.
+                        }
+                    }
+                ]
+            });
+
+            var teamTable = $('#teamListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("TeamListData", "ProjectDetail")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.projectId = @ViewBag.ProjectId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'name',
+                        data: 'name',
+                        title: 'Име',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'department',
+                        data: 'department',
+                        title: 'Отдел',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'projectRole',
+                        data: 'projectRole',
+                        title: 'Роля в проекта',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'startDate',
+                        data: 'startDate',
+                        title: 'От',
+                        sortable: true,
+                        searchable: false,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'endDate',
+                        data: 'endDate',
+                        title: 'До',
+                        sortable: true,
+                        searchable: false,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'actions',
+                        data: "id",
+                        title: "",
+                        sortable: false,
+                        searchable: false,
+                        className: "text-center noExport",
+                        "render": function (data, type, row, meta) {
+                            return TemplateToHtml('#editTeam', row);
+                        }
+                    }
+                ]
+            });
+
+        });
+
+        $(document).on('click', 'a.delete-link', deleteRow);
+
+        function deleteRow(e) {
+
+                e.preventDefault();
+
+                var deleteLink = $(this);
+                deleteLink.hide();
+                var confirmButton = deleteLink.siblings(".delete-confirm");
+                confirmButton.show();
+
+                var cancelDelete = function () {
+                    removeEvents();
+                    showDeleteLink();
+                };
+
+                var deleteItem = function () {
+                    removeEvents();
+                    confirmButton.hide();
+                    $.post(
+                        '@Url.Action("DeleteTechnology","ProjectDetail")',
+                        AddAntiForgeryToken({ technologyProjectId: confirmButton.attr('data-delete-id') }))
+                        .done(function (data) {
+                            var parentRow = deleteLink.parents("tr:first");
+                            parentRow.fadeOut('fast', function () {
+                                parentRow.remove();
+                                messageHelper.ShowSuccessMessage("Успешно изтриване!");
+                            });
+
+                       }).fail(function (data) {
+                           messageHelper.ShowErrorMessage("Възникна проблем при изтриване! Записът не е изтрит!");
+                       }).always(
+                       function () {
+                        table.draw( true );
+                       });
+                    return false;
+                };
+
+                var removeEvents = function () {
+                    confirmButton.off("click", deleteItem);
+                    $(document).on("click", cancelDelete);
+                    $(document).off("keypress", onKeyPress);
+                };
+
+                var showDeleteLink = function () {
+                    confirmButton.hide();
+                    deleteLink.show();
+                };
+
+                var onKeyPress = function (e) {
+                    //Cancel if escape key pressed
+                    if (e.which == 27) {
+                        cancelDelete();
+                    }
+                };
+
+                confirmButton.on("click", deleteItem);
+                $(document).on("click", cancelDelete);
+                $(document).on("keypress", onKeyPress);
+                return false;
+            }
+
+                AddAntiForgeryToken = function (data) {
+                data.__RequestVerificationToken = $('input[name=__RequestVerificationToken]').val();
+                return data;
+                }
+    </script>
+}
+
+<script id="editTeam" type="text/x-handlebars-template">
+    <a href="@Url.Action("EditTeam")?personId={{this.personId}}&projectId={{this.projectId}}" class="btn btn-warning btn-sm" title="Редакция"><i class="fa fa-edit"></i><span class="hidden-sm hidden-xs"> Редакция</span></a>
+</script>
+
+<script id="templateDelete" type="text/x-handlebars-template">
+    <div class="delete-section">
+        <a href="@Url.Action("Delete", "ProjectDetail")/{{this}}" class="delete-link btn btn-danger btn-sm" title="Изтриване"><i class="fas fa-trash-alt"></i> <span class="hidden-sm hidden-xs">Изтриване</span></a>
+        <div class="btn btn-danger btn-sm delete-confirm" style="display:none" data-delete-id="{{this}}"><i class="fas fa-check"></i> Потвърди изтриване</div>
+    </div>
+</script>

@@ -1,0 +1,27 @@
+﻿@model IOWebFramework.Core.Models.MyDossier.MyDossierViewModel
+@{
+    string avatar = (Model.Photo == null || !(Model?.Photo).Any()) ? Url.Content("~/img/avatar.png") : $"data:image/png;base64,{Convert.ToBase64String(Model.Photo)}";
+    string date = string.Empty;
+    if (Model.HireDate != null)
+    {
+        date = Model.HireDate.ToString("dd/MM/yyyy");
+    }
+}
+<div class="card card-body bg-light">
+    <div>
+        <img class="profile-user-img img-responsive img-bordered" id="UserDetailDTO_Photo_Img" src="@avatar">
+    </div>
+    <br />
+
+    <div>@Html.LabelFor(x => x.PersonName, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.PersonName, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.PID, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.PID, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Td, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Td, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.HireDate, new { @readonly = "readonly" }) :  @date</div>
+    <div>@Html.LabelFor(x => x.Branch, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Branch, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Department, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Department, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Position, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Position, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Address, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Address, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Telephone, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Telephone, new { @readonly = "readonly" })</div>
+    <div>@Html.LabelFor(x => x.Email, new { @readonly = "readonly" }) :  @Html.DisplayFor(x => x.Email, new { @readonly = "readonly" })</div>
+
+</div>

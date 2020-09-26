@@ -1,0 +1,273 @@
+﻿@model IOWebFramework.Core.Models.Attachments.AttachedDocumentsTableViewModel
+@using IOWebFramework.Infrastructure.Constants
+
+@{
+    var title = "Придружаващи документи";
+    if (!string.IsNullOrEmpty(Model.Title))
+    {
+        title = Model.Title.Trim();
+    }
+
+    var tableId = "attachedDocumentsTable";
+}
+@if (Model.DocumentId <= 0)
+{
+    <div class="callout callout-info">
+        <h5><i class="fas fa-exclamation-triangle"></i>За да прикачите документ/и първо направете запис и след това редактирайте!</h5>
+    </div>
+}
+@if (Model.DocumentId > 0)
+{
+    <div class="box box-primary">
+        <div class="box-body">
+            <h4>@Html.Raw(title)</h4>
+            @if (!Model.HideAddNewDocumentButton && !Model.HideAllButtons)
+            {
+                <div class="float-xs-right margin-bottom" style="margin-bottom: 4px">
+                    <button onclick="OpenUploadDialog(); return false;" type="button" class="btn btn-success float-xs-right"><i class="fa fa-plus" aria-hidden="true"></i> Прикачи документ</button>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="@(Html.Raw(tableId))" class="table table-hover table-striped"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script id="addAttachedDocument" type="text/x-handlebars-template">
+    <form>
+        <div class="form-group">
+            <label for="number" class="col-form-label">Номер</label>
+            <input type="text" class="form-control" id="number">
+        </div>
+        <div class="form-group">
+            <label for="date" class="col-form-label">Дата</label>
+            <input type="text" class="form-control" id="date">
+        </div>
+        <div class="form-group">
+            <label for="description" class="col-form-label">Описание</label>
+            <textarea class="form-control" id="description"></textarea>
+        </div>
+    </form>
+    <div class="modal-footer">
+        <div class="input-group mt-3">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFile02">
+                <label class="custom-file-label" for="inputGroupFile02">Избери файл</label>
+            </div>
+            <div class="input-group-append">
+                <span class="input-group-text" id="">Прикачи</span>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    function ReloadFiles() {
+        $('#tableDocuments').DataTable().draw();
+    }
+
+    function ReInitPluggins() {
+        $('.date-picker').datepicker({
+            todayHighlight: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            language: 'bg-BG',
+        });
+    }
+
+
+    function ShowBigModalDialog(title, html) {
+        $('.modal .modal-title').text(title);
+        $('.modal .modal-body').html(html);
+        $('.modal .modal-dialog').attr("style", "width: 80% !important;");
+        $('.modal').modal('show');
+        //$('.modal-backdrop.show').addClass('fade');
+    }
+    function MakeBigModalDialog(container) {
+        var _width = $(window).width() * 90 / 100;
+        var _height = $(window).height() * 80 / 100;
+        $(container)
+            .dialog({
+                modal: true, width: _width, height: _height
+            });
+    }
+
+    function HideModalDialog() {
+        $('.modal .modal-body').html("");
+        $('.modal').modal('hide');
+    }
+
+    function EditAttachedDocument(id) {
+        var url = '@Url.Action("EditAttachedDocument", "File")';
+        var data = { attachedDocumentId: id,  };
+        requestContent(url, data, function (html) {
+            ShowBigModalDialog("Редакция на файл", html);
+        });
+    }
+</script>
+
+<script>
+    @*function OpenUploadDialog() {
+         var url = '@Url.Action("AddAttachedDocument","File")';
+        var data = { documentId:@Model.DocumentId, documentType:@Model.DocumentType};
+        requestContent(url, data, function (html) {
+            ShowModalDialog("Прикачване на документ", TemplateToHtml('#addAttachedDocument'));
+        });
+    }*@
+
+    function OpenUploadDialog() {
+        var url = '@Url.Action("AddAttachedDocument","File")';
+        var data = { documentId:@Model.DocumentId, documentType:@Model.DocumentType};
+        requestContent(url, data, function (html) {
+            ShowModalDialog("Прикачване на документ", html);
+        });
+    }
+
+    function UploadFileToAttachedDocument(id) {
+        var url = '@Url.Action("UploadFileToAttachedDocument", "File")';
+        var data = { attachedDocumentId: id};
+        requestContent(url, data, function (html) {
+            ShowUploadModalDialog("Прикачване на файл", html);
+        });
+    }
+
+     @*function EditAttachedDocument(id) {
+        var url = '@Url.Action("EditAttachedDocument", "File")';
+        var data = { attachedDocumentId: id };
+        requestContent(url, data, function (html) {
+            ShowUploadModalDialog("Редакция на файл", html);
+        });
+     }*@
+
+    var showDeleteButton = true;
+    if ('@Model.HideDeleteButton' === 'True') {
+        showDeleteButton = false;
+    }
+
+    var hideAllButtons = false;
+    if ('@Model.HideAllButtons' === 'True') {
+        hideAllButtons = true;
+    }
+
+    var filesTable = {};
+        $(function () {
+            filesTable = $('@($"#{Html.Raw(tableId)}")').DataTable({
+                stateSave: false,
+                ajax: {
+                    "url": "@Url.Action("AttachmentDocumentsListData", "File")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (d) {
+                        d.documentId = '@Model.DocumentId';
+                        d.documentType = '@Model.DocumentType';
+                    }
+                },
+                columns: [
+                    {
+                        name: '',
+                        data: '',
+                        title: 'Описание',
+                        sortable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            if (row.description !== null) {
+                                return row.description;
+                            }
+                            return row.activityName;
+                        }
+                    }//,
+                    //{
+                    //    name: 'Date',
+                    //    data: 'date',
+                    //    title: 'Дата',
+                    //    sortable: true,
+                    //    searchable: false,
+                    //    className: "select-filter",
+                    //    render: function (data, type, row, meta) {
+                    //        return JsonBGdate(data);
+                    //    }
+                    //}
+                    ,
+                    {
+                        name: 'DateUploaded',
+                        data: 'dateUploaded',
+                        title: 'Прикачен на',
+                        sortable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            return JsonBGdate(data);
+                        }
+                    },
+                    {
+                        name: 'actions',
+                        data: "id",
+                        title: "",
+                        sortable: false,
+                        searchable: false,
+                        className: "text-right",
+                        render: function (data, type, row, meta) {
+                            if (hideAllButtons === true) {
+                                return "";
+                            }
+                            var deleteButton = "";
+                            if (showDeleteButton) {
+                                deleteButton = TemplateToHtml('#templateDeleteAttachedDocument', data);
+                            }
+                            return TemplateToHtml('#templateDownloadAttachedDocument', row.fileContentId) + deleteButton;
+                        }
+                    }
+                ]
+            })/*.order([[1, 'desc']])*/;
+    });
+    function ReloadFiles() {
+        filesTable.draw();
+    }
+</script>
+
+<script>
+    function RemoveAttachedDocument(id) {
+        Swal.fire({
+            title: "Сигурни ли сте?",
+            text: "След премахване, нямате възможност за възстановяване!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Да",
+            confirmButtonColor: '#008000',
+            cancelButtonText: "Назад",
+            cancelButtonColor: '#d33',
+            dangerMode: true,
+        })
+        .then((result) => {
+            if (result.value) {
+            $.post("@Url.Action("HardDeleteAttachedDocument", "File")", { attachedDocumentId: id })
+                .done(function (result) {
+                    if (result === "OK") {
+                        window.scrollTo(0, 0);
+                        Swal.fire(
+                            'Премахнат!',
+                            'Прикачения документ е премахнат успешно.',
+                            'success'
+                        )
+                        messageHelper.ShowSuccessMessage("Прикачения документ е премахнат успешно.");
+                        ReloadFiles();
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+<script id="templateDeleteAttachedDocument" type="text/x-handlebars-template">
+    <button type="button" onclick="RemoveAttachedDocument({{this}});" class="btn btn-danger btn-sm" title="Премахни"><i class="fa fa-remove"></i><span class="hidden-sm hidden-xs"> Премахни</span></button>
+</script>
+<script id="templateDownloadAttachedDocument" type="text/x-handlebars-template">
+    <a href="@Url.Action("Download","File")/{{this}}" class="btn btn-primary btn-sm" title="Изтегли"><i class="fa fa-download"></i><span class="hidden-sm hidden-xs"> Изтегли</span></a>
+</script>
+<script id="templateUploadAttachedDocument" type="text/x-handlebars-template">
+    <button type="button" onclick="UploadFileToAttachedDocument({{this}});" class="btn btn-success btn-sm" title="Прикачи"><i class="fa fa-upload"></i><span class="hidden-sm hidden-xs"> Прикачи</span></button>
+</script>
+<script id="templateEditAttachedDocument" type="text/x-handlebars-template">
+    <button type="button" onclick="EditAttachedDocument({{this}});" class="btn btn-success btn-sm" title="Прикачи"><i class="fa fa-upload"></i><span class="hidden-sm hidden-xs"> Прикачи</span></button>
+</script>

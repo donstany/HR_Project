@@ -1,0 +1,190 @@
+﻿@model string
+
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column nav-flat text-sm" data-widget="treeview" role="menu" data-accordion="false">
+        <menulistitem menu="home" class="nav-item">
+            <a href="@Url.Action("Index", "Home")" class="nav-link">
+                <i class="nav-icon fas fa-home"></i>
+                <p>
+                    Начало
+                </p>
+            </a>
+        </menulistitem>
+        <menulistitem menu="myDossier" class="nav-item">
+            <a href="@Url.Action("Index", "MyDossier")" class="nav-link">
+                <i class="nav-icon fas fa-user-edit"></i>
+                <p>
+                    Моето досие
+                </p>
+            </a>
+        </menulistitem>
+        @if (User.IsInRole("HR"))
+        {
+            <menulistitem menu="employee" class="nav-item">
+                <a href="@Url.Action("Index", "Employee")" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>
+                        Служители
+                    </p>
+                </a>
+            </menulistitem>
+            <menulistitem menu="project" class="nav-item">
+                <a href="@Url.Action("Index", "Project")" class="nav-link">
+                    <i class="nav-icon fas fa-business-time"></i>
+                    <p>
+                        Проекти
+                    </p>
+                </a>
+            </menulistitem>
+            <li class="nav-item has-treeview dropdown active">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fa fa-list-ul"></i>
+                    <p>
+                        Номенклатури
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <menulistitem menu="CertificateType" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="CertificateType" })" class="nav-link">
+                            <i class="nav-icon fas fa-award"></i>
+                            <p>
+                                Тип на сертификат
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="certificateNameIssuer" class="nav-item">
+                        <a href="@Url.Action("Index","CertificateNameIssuer")" class="nav-link">
+                            <i class="nav-icon fab fa-leanpub"></i>
+                            <p>
+                                Сертификати по издател
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="EducationInstitution" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="EducationInstitution" })" class="nav-link">
+                            <i class="nav-icon fas fa-university"></i>
+                            <p>
+                                Образователна институция
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="Degree" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Degree" })" class="nav-link">
+                            <i class="nav-icon fas fa-graduation-cap"></i>
+                            <p>
+                                Квалификационна степен
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="ProjectRole" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="ProjectRole" })" class="nav-link">
+                            <i class="nav-icon fas fa-person-booth"></i>
+                            <p>
+                                Роля в проекта
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="Technology" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Technology" })" class="nav-link">
+                            <i class="nav-icon fas fa-laptop-code"></i>
+                            <p>
+                                Технологии
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="Client" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Client" })" class="nav-link">
+                            <i class="nav-icon fas fa-user-friends"></i>
+                            <p>
+                                Клиенти
+                            </p>
+                        </a>
+                    </menulistitem>
+                    @*<menulistitem menu="Branch" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Branch" })" class="nav-link">
+                            <i class="nav-icon fas fa-map-marked-alt"></i>
+                            <p>
+                                Клон
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="Department" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Department" })" class="nav-link">
+                            <i class="nav-icon fas fa-network-wired"></i>
+                            <p>
+                                Отдел
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="Position" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="Position" })" class="nav-link">
+                            <i class="nav-icon fas fa-user-tie"></i>
+                            <p>
+                                Длъжност
+                            </p>
+                        </a>
+                    </menulistitem>*@
+                    <menulistitem menu="TrainingCenter" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="TrainingCenter" })" class="nav-link">
+                            <i class="nav-icon fas fa-school"></i>
+                            <p>
+                                Обучителни центрове
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="TrainingName" class="nav-item">
+                        <a href="@Url.Action("Index","Nomenclature", new { nomenclatureName="TrainingName" })" class="nav-link">
+                            <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                            <p>
+                                Обучения
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="classifier" class="nav-item">
+                        <a href="@Url.Action("Index", "Classifier")" class="nav-link">
+                            <i class="nav-icon fab fa-readme"></i>
+                            <p>
+                                Класификатор
+                            </p>
+                        </a>
+                    </menulistitem>
+                    <menulistitem menu="SchoolProfile" class="nav-item">
+                        <a href="@Url.Action("Index", "Nomenclature", new { nomenclatureName = "SchoolProfile" })" class="nav-link">
+                            <i class="nav-icon fas fa-microscope"></i>
+                            <p>
+                                Профили
+                            </p>
+                        </a>
+                    </menulistitem>
+                </ul>
+            </li>
+            <menulistitem menu="report" class="nav-item">
+                <a href="@Url.Action("Index", "Report")" class="nav-link">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    <p>
+                        Справки
+                    </p>
+                </a>
+            </menulistitem>
+        }
+
+    </ul>
+</nav>
+<script>
+    $(function () {
+        var currentMenuItem = '@ViewBag.MenuItemValue';
+        if (currentMenuItem.length > 0) {
+            var menuItem = $('ul.nav-sidebar li[data-menuitem="' + currentMenuItem + '"] a.nav-link:first');
+            menuItem.addClass('active');
+            var parent = menuItem.parents('li.has-treeview:first');
+
+            if (parent) {
+                parent.addClass('menu-open');
+                parent.find('a.nav-link:first').addClass('active');
+                parent.find('ul.nav-treeview').show();
+            }
+
+        }
+    });
+</script>

@@ -1,0 +1,80 @@
+﻿@model object
+@using System.Reflection;
+@using IOWebFramework.Infrastructure.Data.Models.Nomenclatures;
+@using System.ComponentModel.DataAnnotations.Schema;
+@using IOWebFramework.Infrastructure.Attributes;
+
+@{
+    ViewData["Title"] = TempData.Peek("Title");
+    PropertyInfo[] properties = Model
+        .GetType()
+        .GetProperties();
+
+    PropertyInfo[] orderedProperties = properties
+        .Where(p => p.DeclaringType.Name == "BaseCommonNomenclature")
+        .Select(p => p)
+        .Union(properties.Where(p => p.DeclaringType.Name != "BaseCommonNomenclature")
+        .Select(p => p))
+        .ToArray();
+
+    string[] hiddenFields = new string[] { "Id", "OrderNumber", "CurrentLanguageDescription", "CurrentLanguageLabel", "DefaultLanguageLabel", "DefaultLanguageDescription" };
+
+    var nomInstance = (BaseCommonNomenclature)Model;
+    var historyId = string.Format("{0}_{1}", TempData.Peek("NomenclatureName").ToString(), nomInstance.Id);
+
+    Attribute[] customClassAttrs = Attribute.GetCustomAttributes(Model.GetType());
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                @await Html.PartialAsync("_SaveFormContent", "#saveContainer")
+                @foreach (var property in orderedProperties)
+                {
+                    if (customClassAttrs.Any(x => x.GetType() == typeof(HiddenDatesOnUI))
+                        && ((property.Name == "DateStart") || (property.Name == "DateEnd")))
+                    {
+                        continue;
+                    }
+
+                    if (hiddenFields.Contains(property.Name) || property.CustomAttributes.FirstOrDefault(a => a.AttributeType == typeof(ForeignKeyAttribute)) != null)
+                    {
+                        @Html.Hidden(property.Name, property.GetValue(Model, null))
+                    }
+                    else if (ViewData[property.Name + "_ddl"] != null)
+                    {
+                        @Html.Editor(property.Name, "GenericDropDown")
+                    }
+                    else if (property.Name == "IsActive")
+                    {
+                        @Html.Editor(property.Name, "Toggle")
+                        <br />
+                        <br />
+                    }
+                    else if (property.Name == "Description")
+                    {
+                        @Html.Editor(property.Name, "Textarea") 
+                    }
+                    else
+                    {
+                        @Html.Editor(property.Name, property.GetValue(Model, null))
+                    }
+                }
+            </div>
+
+            <div class="form-group" @*style="margin-top : 60px"*@>
+                <input type="submit" value="Запис" class="btn btn-success" />
+                <a asp-action="Index" asp-route-nomenclatureName="@TempData.Peek("NomenclatureName")" asp-route-title="@TempData.Peek("Title")" class="btn btn-danger">Назад</a>
+                @if (nomInstance.Id > 0)
+                {
+                    <div class="float-right">
+                        @await Html.PartialAsync("_ShowLogOperation", new IOWebFramework.Core.Models.ShowLogModel() { ObjectKey = historyId })
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+

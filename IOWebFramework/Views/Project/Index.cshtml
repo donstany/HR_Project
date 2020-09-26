@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Проекти";
+}
+
+<div class="row">
+    <div class="col-md-12 text-right pb-15">
+        <a asp-action="Add" class="btn btn-success">
+            <i class="fa fa-plus"></i>
+            Добави Проект
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="projectListTable" class="table table-hover table-striped"></table>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            var table = $('#projectListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("ProjectListData", "Project")",
+                    "type": "POST",
+                    "datatype": "json",
+                     data: function (d) {
+                        d.onlyActive = $("#onlyActive").length == 0 || $("#onlyActive").is(':checked');
+                    }
+                },
+                fnInitComplete: function (settings, json) {
+                    initDataTablesSearch(settings);
+                    $('div.custom-filter').html(TemplateToHtml('#templateOnlyActive'));
+                 },
+                //prop from ProjectListViewModel from JsonProperty("...")
+                columns: [
+                    {
+                        name: 'code',
+                        data: 'code',
+                        title: 'Номер',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'name',
+                        data: 'name',
+                        title: 'Име',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'client',
+                        data: 'client',
+                        title: 'Клиент',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'startDate',
+                        data: 'startDate',
+                        title: 'Дата от',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'endDate',
+                        data: 'endDate',
+                        title: 'Дата до',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'manager',
+                        data: 'manager',
+                        title: 'Ръководител',
+                        sortable: true,
+                        searchable: true
+                    },
+
+                    // button columns
+                    {
+                        name: 'projectDetails',
+                        data: "id",
+                        sortable: false,
+                        searchable: false,
+                        className: "text-center noExport",
+                        "render": function (value) {
+                            return TemplateToHtml('#templateProjectDetails', value); // value will be binded to {{this}} in  Handle bar template, in our case value is Id.
+                        }
+                    },
+                    {
+                        name: 'actions',
+                        data: "id",
+                        title: "",
+                        sortable: false,
+                        searchable: false,
+                        className: "text-center noExport",
+                        "render": function (value) {
+                            return TemplateToHtml('#templateEdit', value);
+                        }
+                    }
+                ]
+            });
+        }
+        );
+    </script>
+
+    <script id="templateProjectDetails" type="text/x-handlebars-template">
+        <a href="@Url.Action("Index", "ProjectDetail")?projectId={{this}}" class="btn btn-primary btn-sm" title="Преглед"><i class="fa fa-address-card"></i><span class="hidden-sm hidden-xs"> Преглед</span></a>
+    </script>
+    <script id="templateEdit" type="text/x-handlebars-template">
+        <a href="@Url.Action("Edit", "Project")?projectId={{this}}" class="btn btn-success btn-sm" title="Редакция"><i class="fa fa-edit"></i><span class="hidden-sm hidden-xs"> Редакция</span></a>
+    </script>
+
+    <script id="templateOnlyActive" type="text/x-handlebars-template">
+        <div class="d-block d-lg-inline ml-2 custom-control custom-checkbox align-middle">
+            <input type="checkbox" id="onlyActive" name="onlyActive" class="custom-control-input align-middle" checked>
+            <label for="onlyActive" class="custom-control-label align-middle">Само активни</label>
+        </div>
+    </script>
+}

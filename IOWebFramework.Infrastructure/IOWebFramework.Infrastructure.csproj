@@ -1,0 +1,193 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200102082006_UicTypesAdded.cs" />
+    <Compile Remove="Migrations\20200102082006_UicTypesAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200102082942_InitialMigration.cs" />
+    <Compile Remove="Migrations\20200102082942_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200107093541_NomenclatureDepartmentAdded.cs" />
+    <Compile Remove="Migrations\20200107093541_NomenclatureDepartmentAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200109150706_EmployeeTrainingProjectDetailCertificateAdded.cs" />
+    <Compile Remove="Migrations\20200109150706_EmployeeTrainingProjectDetailCertificateAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200113153557_RemoveCertificateIdInTrainingDb.cs" />
+    <Compile Remove="Migrations\20200113153557_RemoveCertificateIdInTrainingDb.Designer.cs" />
+    <Compile Remove="Migrations\20200113153733_zeroMigration.cs" />
+    <Compile Remove="Migrations\20200113153733_zeroMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200113153817_zeroMigration.cs" />
+    <Compile Remove="Migrations\20200113153817_zeroMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200113154146_BussinesEntities.cs" />
+    <Compile Remove="Migrations\20200113154146_BussinesEntities.Designer.cs" />
+    <Compile Remove="Migrations\20200114113102_ProjectRoleNoLongerRelationalTable.cs" />
+    <Compile Remove="Migrations\20200114113102_ProjectRoleNoLongerRelationalTable.Designer.cs" />
+    <Compile Remove="Migrations\20200114153948_Nav.cs" />
+    <Compile Remove="Migrations\20200114153948_Nav.Designer.cs" />
+    <Compile Remove="Migrations\20200115123359_ScientificDirectionRennamedToProfessionalDirection.cs" />
+    <Compile Remove="Migrations\20200115123359_ScientificDirectionRennamedToProfessionalDirection.Designer.cs" />
+    <Compile Remove="Migrations\20200115123550_ScientificDirectionRennamedToProfessionalDirection.cs" />
+    <Compile Remove="Migrations\20200115123550_ScientificDirectionRennamedToProfessionalDirection.Designer.cs" />
+    <Compile Remove="Migrations\20200115123741_ScientificDirectionRennamedToProfessionalDirection.cs" />
+    <Compile Remove="Migrations\20200115123741_ScientificDirectionRennamedToProfessionalDirection.Designer.cs" />
+    <Compile Remove="Migrations\20200115143439_ConnectedDiplomaWithAreaProffessionalDirectionSpecialtieNomencatures.cs" />
+    <Compile Remove="Migrations\20200115143439_ConnectedDiplomaWithAreaProffessionalDirectionSpecialtieNomencatures.Designer.cs" />
+    <Compile Remove="Migrations\20200116125625_EmployeeDateTimeFieldsChangedToInt.cs" />
+    <Compile Remove="Migrations\20200116125625_EmployeeDateTimeFieldsChangedToInt.Designer.cs" />
+    <Compile Remove="Migrations\20200116130220_EmployeeDateTimeFieldsChangedToInt1of2.cs" />
+    <Compile Remove="Migrations\20200116130220_EmployeeDateTimeFieldsChangedToInt1of2.Designer.cs" />
+    <Compile Remove="Migrations\20200116130256_EmployeeDateTimeFieldsChangedToInt2of2.cs" />
+    <Compile Remove="Migrations\20200116130256_EmployeeDateTimeFieldsChangedToInt2of2.Designer.cs" />
+    <Compile Remove="Migrations\20200117085933_zero.cs" />
+    <Compile Remove="Migrations\20200117085933_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200117111010_zero.cs" />
+    <Compile Remove="Migrations\20200117111010_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200117151839_employeeDepartmrntIdForeignKey.cs" />
+    <Compile Remove="Migrations\20200117151839_employeeDepartmrntIdForeignKey.Designer.cs" />
+    <Compile Remove="Migrations\20200117162920_RemoveEmployeeInPerson.cs" />
+    <Compile Remove="Migrations\20200117162920_RemoveEmployeeInPerson.Designer.cs" />
+    <Compile Remove="Migrations\20200120090407_addEmployeeInPerson.cs" />
+    <Compile Remove="Migrations\20200120090407_addEmployeeInPerson.Designer.cs" />
+    <Compile Remove="Migrations\20200120113341_zeroo.cs" />
+    <Compile Remove="Migrations\20200120113341_zeroo.Designer.cs" />
+    <Compile Remove="Migrations\20200120113542_removeUnecesseryRelation.cs" />
+    <Compile Remove="Migrations\20200120113542_removeUnecesseryRelation.Designer.cs" />
+    <Compile Remove="Migrations\20200120121610_zero.cs" />
+    <Compile Remove="Migrations\20200120121610_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200120160156_zero.cs" />
+    <Compile Remove="Migrations\20200120160156_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200120161537_zero.cs" />
+    <Compile Remove="Migrations\20200120161537_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200120164950_zero.cs" />
+    <Compile Remove="Migrations\20200120164950_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200122123247_zero.cs" />
+    <Compile Remove="Migrations\20200122123247_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200128091726_zero.cs" />
+    <Compile Remove="Migrations\20200128091726_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200128092725_zero.cs" />
+    <Compile Remove="Migrations\20200128092725_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200130125213_zero.cs" />
+    <Compile Remove="Migrations\20200130125213_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200204123035_RemovingConstraintKeyFromEmployee.cs" />
+    <Compile Remove="Migrations\20200204123035_RemovingConstraintKeyFromEmployee.Designer.cs" />
+    <Compile Remove="Migrations\20200205144900_zerro.cs" />
+    <Compile Remove="Migrations\20200205144900_zerro.Designer.cs" />
+    <Compile Remove="Migrations\20200205145117_CertificateList.cs" />
+    <Compile Remove="Migrations\20200205145117_CertificateList.Designer.cs" />
+    <Compile Remove="Migrations\20200210121443_RemoveSpecialty.cs" />
+    <Compile Remove="Migrations\20200210121443_RemoveSpecialty.Designer.cs" />
+    <Compile Remove="Migrations\20200210123041_RemoveSpecialty.cs" />
+    <Compile Remove="Migrations\20200210123041_RemoveSpecialty.Designer.cs" />
+    <Compile Remove="Migrations\20200210152040_zero.cs" />
+    <Compile Remove="Migrations\20200210152040_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200212093734_DataInsertInClassificator1.cs" />
+    <Compile Remove="Migrations\20200212093734_DataInsertInClassificator1.Designer.cs" />
+    <Compile Remove="Migrations\20200212095151_DataInsertInClassificator.cs" />
+    <Compile Remove="Migrations\20200212095151_DataInsertInClassificator.Designer.cs" />
+    <Compile Remove="Migrations\20200212112330_DataInsertInClassificator1.cs" />
+    <Compile Remove="Migrations\20200212112330_DataInsertInClassificator1.Designer.cs" />
+    <Compile Remove="Migrations\20200212134428_SpecialtyNomenclatureChangedNameToClassifier.cs" />
+    <Compile Remove="Migrations\20200212134428_SpecialtyNomenclatureChangedNameToClassifier.Designer.cs" />
+    <Compile Remove="Migrations\20200213145629_CLassificatorImporterAdded.cs" />
+    <Compile Remove="Migrations\20200213145629_CLassificatorImporterAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200214095324_SpecialtyIsNowClassifierAndImported.cs" />
+    <Compile Remove="Migrations\20200214095324_SpecialtyIsNowClassifierAndImported.Designer.cs" />
+    <Compile Remove="Migrations\20200214095812_SpecialtyIsNowClassifierAndImported.cs" />
+    <Compile Remove="Migrations\20200214095812_SpecialtyIsNowClassifierAndImported.Designer.cs" />
+    <Compile Remove="Migrations\20200217142940_zero.cs" />
+    <Compile Remove="Migrations\20200217142940_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200217151243_inita.cs" />
+    <Compile Remove="Migrations\20200217151243_inita.Designer.cs" />
+    <Compile Remove="Migrations\20200217152044_initV2.cs" />
+    <Compile Remove="Migrations\20200217152044_initV2.Designer.cs" />
+    <Compile Remove="Migrations\20200218121644_test.cs" />
+    <Compile Remove="Migrations\20200218121644_test.Designer.cs" />
+    <Compile Remove="Migrations\20200218123335_A1.cs" />
+    <Compile Remove="Migrations\20200218123335_A1.Designer.cs" />
+    <Compile Remove="Migrations\20200218123450_init.cs" />
+    <Compile Remove="Migrations\20200218123450_init.Designer.cs" />
+    <Compile Remove="Migrations\20200218123826_init.cs" />
+    <Compile Remove="Migrations\20200218123826_init.Designer.cs" />
+    <Compile Remove="Migrations\20200218124626_init.cs" />
+    <Compile Remove="Migrations\20200218124626_init.Designer.cs" />
+    <Compile Remove="Migrations\20200219140955_zero.cs" />
+    <Compile Remove="Migrations\20200219140955_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200220100009_RemovingTrainingForeignKeyFromCertificate.cs" />
+    <Compile Remove="Migrations\20200220100009_RemovingTrainingForeignKeyFromCertificate.Designer.cs" />
+    <Compile Remove="Migrations\20200220113555_zero.cs" />
+    <Compile Remove="Migrations\20200220113555_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200220100631_zero.cs" />
+    <Compile Remove="Migrations\20200220100631_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200220100720_test.cs" />
+    <Compile Remove="Migrations\20200220100720_test.Designer.cs" />
+    <Compile Remove="Migrations\20200221095531_CertificateNameIssuerAdded.cs" />
+    <Compile Remove="Migrations\20200221095531_CertificateNameIssuerAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200221095820_CertificateNameIssuerAdded.cs" />
+    <Compile Remove="Migrations\20200221095820_CertificateNameIssuerAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200224073454_zero.cs" />
+    <Compile Remove="Migrations\20200224073454_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200226151246_AddedMoreEntitiesToSeed2.cs" />
+    <Compile Remove="Migrations\20200226151246_AddedMoreEntitiesToSeed2.Designer.cs" />
+    <Compile Remove="Migrations\20200310130206_zero.cs" />
+    <Compile Remove="Migrations\20200310130206_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200310130532_AddingProfilePropertyAndSettingSpecialtyIdToNullableInDiploma.cs" />
+    <Compile Remove="Migrations\20200310130532_AddingProfilePropertyAndSettingSpecialtyIdToNullableInDiploma.Designer.cs" />
+    <Compile Remove="Migrations\20200310130921_AddingProfilePropertyInDiploma.cs" />
+    <Compile Remove="Migrations\20200310130921_AddingProfilePropertyInDiploma.Designer.cs" />
+    <Compile Remove="Migrations\20200311134216_AddUserFromADIdentity.cs" />
+    <Compile Remove="Migrations\20200311134216_AddUserFromADIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20200316084841_SchoolProfileNomenclatureAdded.cs" />
+    <Compile Remove="Migrations\20200316084841_SchoolProfileNomenclatureAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200325150716_ClientNomenclatureAdded.cs" />
+    <Compile Remove="Migrations\20200325150716_ClientNomenclatureAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200330182713_DefaultRoles.cs" />
+    <Compile Remove="Migrations\20200330182713_DefaultRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200330183054_DefaultRoles.cs" />
+    <Compile Remove="Migrations\20200330183054_DefaultRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200330183745_DefaultRoles.cs" />
+    <Compile Remove="Migrations\20200330183745_DefaultRoles.Designer.cs" />
+    <Compile Remove="Migrations\20200330140106_zero.cs" />
+    <Compile Remove="Migrations\20200330140106_zero.Designer.cs" />
+    <Compile Remove="Migrations\20200504094509_CdnDbContextAdded.cs" />
+    <Compile Remove="Migrations\20200504094509_CdnDbContextAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200506065545_DocumentTypeNomenclatureAdded.cs" />
+    <Compile Remove="Migrations\20200506065545_DocumentTypeNomenclatureAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200506065831_DocumentTypeNomenclatureAdded.cs" />
+    <Compile Remove="Migrations\20200506065831_DocumentTypeNomenclatureAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200506070034_DocumentTypeNomenclatureAdded.cs" />
+    <Compile Remove="Migrations\20200506070034_DocumentTypeNomenclatureAdded.Designer.cs" />
+    <Compile Remove="Migrations\20200514090810_test1.cs" />
+    <Compile Remove="Migrations\20200514090810_test1.Designer.cs" />
+    <Compile Remove="Migrations\20200514140034_test2.cs" />
+    <Compile Remove="Migrations\20200514140034_test2.Designer.cs" />
+    <Compile Remove="Migrations\20200514140450_RemoveAttachmentTypeAsUnneceserySecondCategory.cs" />
+    <Compile Remove="Migrations\20200514140450_RemoveAttachmentTypeAsUnneceserySecondCategory.Designer.cs" />
+    <Compile Remove="Migrations\20200515084340_removedHasFileePropFromAttachedDocumetsAndBiningModels.cs" />
+    <Compile Remove="Migrations\20200515084340_removedHasFileePropFromAttachedDocumetsAndBiningModels.Designer.cs" />
+    <Compile Remove="Migrations\20200611075259_AddSyncAtInEmployeeAnPerson.cs" />
+    <Compile Remove="Migrations\20200611075259_AddSyncAtInEmployeeAnPerson.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="IO.CDN" Version="3.1.1" />
+    <PackageReference Include="IO.LogOperation" Version="1.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IOWebFramework.Shared.Common\IOWebFramework.Shared.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Classifier.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

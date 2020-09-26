@@ -1,0 +1,122 @@
+﻿@model IOWebFramework.Core.Models.Project.ProjectViewModel
+@{
+    ViewData["Title"] = "Проекти";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                <partial name="_SaveFormContent" model="@("#saveContainer")" />
+                @Html.HiddenFor(x => x.Id)
+                <div class="row">
+                    <div class="col-lg-6">
+                        @Html.EditorFor(x => x.Code)
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.Name)</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.FullName)</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.StartDate, "DateTimeWithTime")</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.EndDate, "DateTimeWithTime")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.ClientId, "GenericDropDown")</div>
+                    <div title="Добави Клиент към номенклатурата" class="col-lg-6" style="margin-top:31.5px">
+                        <a href="#" onclick="showClientForm(); return false;" class="btn btn-success">
+                            <i class="fa fa-plus"></i>
+                            Добави към номенклатурата
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.ManagerId, "Select2")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.Description, "Textarea")</div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        @Html.EditorFor(x => x.IsActive, "Toggle")
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="form-group">
+                    <input type="submit" value="Запис" class="btn btn-success" />
+                    <a asp-action="Index" asp-controller="Project" class="btn btn-danger">Назад</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script id="addClientTemplate" type="text/x-handlebars-template">
+        <form id="clientForm" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="code" class="col-form-label">Код</label>
+                <input type="text" class="form-control" id="code" required>
+                <div class="invalid-feedback">
+                    Полето 'Код' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="clientName" class="col-form-label">Име на клиент</label>
+                <input type="text" class="form-control" id="clientName" required>
+                <div class="invalid-feedback">
+                    Полето 'Име на клиент' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-form-label">Описание</label>
+                <textarea class="form-control" id="description"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="isActive" class="custom-control-input" checked />
+                    <label class="custom-control-label" for="isActive">Активен</label>
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" form="clientForm">@Html.Raw("Запис")</button>
+            <button type="button" class="btn btn-danger dt-reload" data-dismiss="modal">@Html.Raw("Назад")</button>
+        </div>
+    </script>
+
+    <script>
+        function addClient() {
+            var code = $('#code').val().trim();
+            var clientName = $('#clientName').val().trim();
+            var description = $('#description').val().trim();
+            var isActive = $('#isActive').is(":checked");
+
+            $.post("@Url.Action("AddClient", "Project")", { code: code, clientName: clientName, description: description, isActive: isActive })
+                .done(function (result) {
+                    if (result === 'ok') {
+                        HideModalDialog();
+                        setTimeout(function () {window.location.href = '@Url.Action("Add", "Project")';  }, 0);
+                    }
+                    else {
+                        HideModalDialog();
+                    }
+                })
+                .fail(function (error) {
+                    HideModalDialog();
+                });
+        }
+
+        function showClientForm() {
+            ShowModalDialog("Добавяне на клиент към номенклатурата", TemplateToHtml('#addClientTemplate'));
+            modalPopUpValidation(addClient);
+        }
+    </script>
+}

@@ -1,0 +1,303 @@
+﻿@model IOWebFramework.Core.Models.MyDossier.MyDossierViewModel
+
+
+@{
+    //var dossierLabel = Convert.ToString(ViewBag.DossierLabel);
+
+    var tabToOpen = "";
+    if (ViewBag.TabToOpen != null)
+    {
+        tabToOpen = ViewBag.TabToOpen;
+    }
+}
+
+@*<div class="row">
+    <div class="card card-body bg-light">
+        <div><strong>ДОСИЕ НА СЛУЖИТЕЛЯ:</strong></div>
+        <div>@dossierLabel</div>
+    </div>
+</div>*@
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-main-tab" data-toggle="tab" href="#nav-main" role="tab" aria-controls="nav-main" aria-selected="false"><i class="fas fa-info-circle"></i> Основна информация</a>
+        <a class="nav-item nav-link" id="nav-training-tab" data-toggle="tab" href="#nav-training" role="tab" aria-controls="nav-training" aria-selected="true"><i class="fas fa-chalkboard-teacher"></i> Обучения</a>
+        <a class="nav-item nav-link" id="nav-diploma-tab" data-toggle="tab" href="#nav-diploma" role="tab" aria-controls="nav-diploma" aria-selected="false"><i class="fas fa-book-open"></i> Дипломи</a>
+        <a class="nav-item nav-link" id="nav-certificate-tab" data-toggle="tab" href="#nav-certificate" role="tab" aria-controls="nav-certificate" aria-selected="false"><i class="fas fa-award"></i> Сертификати</a>
+        <a class="nav-item nav-link" id="nav-project-tab" data-toggle="tab" href="#nav-project" role="tab" aria-controls="nav-project" aria-selected="false"><i class="fas fa-business-time"></i> Проекти</a>
+    </div>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fadeshow active" id="nav-main" role="tabpanel" aria-labelledby="nav-main-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Основна информация за служителя</h5>
+        </div>*@
+
+        @await Html.PartialAsync("~/Views/MyDossier/MyMainInfo.cshtml", Model)
+    </div>
+
+    <div class="tab-pane fade" id="nav-training" role="tabpanel" aria-labelledby="nav-training-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Обучения, на които служителят е записан или е присъствал/ще присъства</h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="trainingsListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="nav-diploma" role="tabpanel" aria-labelledby="nav-diploma-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Дипломи, издадени на служителя </h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="diplomasListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-certificate" role="tabpanel" aria-labelledby="nav-certificate-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Сертификати, издадени на служителя</h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="certificatesListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-project" role="tabpanel" aria-labelledby="nav-project-tab">
+        <br />
+        @*<div class="callout callout-info">
+            <h5><i class="fas fa-exclamation-triangle"></i> Проекти, по които е работил служителят</h5>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-12">
+                <table id="projectsListTable" class="table table-hover table-striped"></table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts {
+    <script>
+        $(function () {
+            var tabToOpen = '@tabToOpen';
+            if (tabToOpen !== null) {
+                $(tabToOpen).trigger('click')
+            }
+
+            var trainingsTable = $('#trainingsListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("TrainingListData", "Dossier")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.personId = @ViewBag.PersonId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'trainingName',
+                        data: 'trainingName',
+                        title: 'Обучение',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'trainingCenter',
+                        data: 'trainingCenter',
+                        title: 'Обучителен център',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'DateStart',
+                        data: 'startDate',
+                        title: 'От дата',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'DateEnd',
+                        data: 'endDate',
+                        title: 'До дата',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    }
+                ]
+            });
+
+            var certificatesTable = $('#certificatesListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("CertificateListData", "Dossier")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.personId = @ViewBag.PersonId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'certificateNameIssuer',
+                        data: 'certificateNameIssuer',
+                        title: 'Име на Сертификат',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'certificateType',
+                        data: 'certificateType',
+                        title: 'Тип на сертификат',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'dateStart',
+                        data: 'dateStart',
+                        title: 'Дата на издаване',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'dateEnd',
+                        data: 'dateEnd',
+                        title: 'Валиден до',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    }
+                ]
+            });
+
+
+            var diplomasListTable = $('#diplomasListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("DiplomaListData", "Dossier")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.personId = @ViewBag.PersonId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'specialty',
+                        data: 'specialty',
+                        title: 'Специалност/Профил',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'degree',
+                        data: 'degree',
+                        title: 'Степен',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'educationInstitution',
+                        data: 'educationInstitution',
+                        title: 'Образователна институция',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'successfulExam',
+                        data: 'successfulExam',
+                        title: 'Успешно положен изпит',
+                        sortable: true,
+                        searchable: false,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'issueDate',
+                        data: 'issueDate',
+                        title: 'Дата на издаване',
+                        sortable: true,
+                        searchable: false,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    }
+                ]
+            });
+
+
+            var projectsListTable = $('#projectsListTable').DataTable({
+                ajax: {
+                    "url": "@Url.Action("ProjectPersonListData", "MyDossier")",
+                    "type": "POST",
+                    "datatype": "json",
+                    data: function (data) {
+                        data.personId = @ViewBag.PersonId;
+                    }
+                },
+                columns: [
+                    {
+                        name: 'name',
+                        data: 'name',
+                        title: 'Име на проект',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'projectRole',
+                        data: 'projectRole',
+                        title: 'Роля в проекта',
+                        sortable: true,
+                        searchable: true
+                    },
+                    {
+                        name: 'startDate',
+                        data: 'startDate',
+                        title: 'Работил от',
+                        sortable: true,
+                        searchable: true,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    },
+                    {
+                        name: 'endDate',
+                        data: 'endDate',
+                        title: 'Работил до',
+                        sortable: true,
+                        searchable: false,
+                        "render": function (value) {
+                            return JsonBGdate(value);
+                        }
+                    }
+                ]
+            });
+
+        });
+
+    </script>
+}
+

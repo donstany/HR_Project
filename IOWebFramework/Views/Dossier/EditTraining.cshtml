@@ -1,0 +1,231 @@
+﻿@model TrainingViewModel
+@using IOWebFramework.Core.Models.Dossier
+@using IOWebFramework.Core.Models.Attachments;
+@using IOWebFramework.Core.Constants;
+
+@{
+    ViewData["Title"] = "Обучение";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-outline card-primary">
+            <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId"><i class="fa fa-address-card"></i>  @Model.BreadcrumbInfo.Title</a>
+        </div>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="EditTraining" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="saveContainer">
+                <partial name="_SaveFormContent" model="@("#saveContainer")" />
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.PersonId)
+                @Html.HiddenFor(x => x.FileContentId)
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.TrainingCenterId, "GenericDropDown")</div>
+                    @if (Model.IsAddingMode)
+                    {
+                        <div title="Добави Обучителен център към номенклатурата" class="col-lg-6" style="margin-top:31.5px">
+                            <a href="#" onclick="showTrainingCenterForm(); return false;" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                Добави към номенклатурата
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.TrainingNameId, "GenericDropDown")</div>
+                    @if (Model.IsAddingMode)
+                    {
+                        <div title="Добави Име на обучение към номенклатурата" class="col-lg-6" style="margin-top:31.5px">
+                            <a href="#" onclick="showTrainingNameForm(); return false;" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                                Добави към номенклатурата
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.DateStart, "DateTimeWithTime")</div>
+                    <div class="col-lg-6">@Html.EditorFor(x => x.DateEnd, "DateTimeWithTime")</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">@Html.EditorFor(x => x.Description, "Textarea")</div>
+                </div>
+            </div>
+            <div class="form-group">
+                @await Html.PartialAsync("_AttachedDocumentsTablePartial", new AttachedDocumentsTableViewModel
+                {
+                    DocumentId = Model.Id,
+                    DocumentType = IOWebFramework.Shared.Common.DocumentTypesConstant.Training,
+                    HideDeleteButton = false
+                })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Запис" class="btn btn-success" />
+                <a asp-action="Index" asp-controller="Dossier" asp-route-employeeId="@ViewBag.EmployeeId" asp-route-tabToOpen="#nav-training-tab" class="btn btn-danger">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script id="addTrainingCenterTemplate" type="text/x-handlebars-template">
+        <form id="trainingCenterForm" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="code" class="col-form-label">Код</label>
+                <input type="text" class="form-control" id="code" required>
+                <div class="invalid-feedback">
+                    Полето 'Код' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="trainingCenterName" class="col-form-label">Име на обучителен център</label>
+                <input type="text" class="form-control" id="trainingCenterName" required>
+                <div class="invalid-feedback">
+                    Полето 'Име на обучителен център' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-form-label">Описание</label>
+                <textarea class="form-control" id="description"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="isActive" class="custom-control-input" checked />
+                    <label class="custom-control-label" for="isActive">Активен</label>
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" form="trainingCenterForm">@Html.Raw("Запис")</button>
+            <button type="button" class="btn btn-danger dt-reload" data-dismiss="modal">@Html.Raw("Назад")</button>
+        </div>
+    </script>
+
+    <script id="addTrainingNameTemplate" type="text/x-handlebars-template">
+        <form id="trainingNameForm" class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="code" class="col-form-label">Код</label>
+                <input type="text" class="form-control" id="code" required>
+                <div class="invalid-feedback">
+                    Полето 'Код' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="trainingName" class="col-form-label">Име на обучение</label>
+                <input type="text" class="form-control" id="trainingName" required>
+                <div class="invalid-feedback">
+                    Полето 'Име на обучение' е задължително!
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-form-label">Описание</label>
+                <textarea class="form-control" id="description"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" id="isActive" class="custom-control-input" checked />
+                    <label class="custom-control-label" for="isActive">Активен</label>
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" form="trainingNameForm">@Html.Raw("Запис")</button>
+            <button type="button" class="btn btn-danger dt-reload" data-dismiss="modal">@Html.Raw("Назад")</button>
+        </div>
+    </script>
+
+    <script>
+
+        function addTrainingName() {
+            var code = $('#code').val().trim();
+            var trainingName = $('#trainingName').val().trim();
+            var description = $('#description').val().trim();
+            var isActive = $('#isActive').is(":checked");
+
+                $.post("@Url.Action("AddTrainingName", "Dossier")", { code: code, trainingName: trainingName, description: description, isActive: isActive })
+                    .done(function (result) {
+                        HideModalDialog();
+                        if (result === 'ok') {
+                            setTimeout(function () { window.location.href = '@Url.Action("AddTraining", "Dossier", new { personId = Model.PersonId})'; }, 0);
+                        }
+                        else {
+                            HideModalDialog();
+                        }
+                    })
+                    .fail(function (error) {
+                        HideModalDialog();
+                    });
+        }
+
+        function showTrainingNameForm() {
+            ShowModalDialog("Добавяне на Име на обучение към номенклатурата", TemplateToHtml('#addTrainingNameTemplate'));
+            modalPopUpValidation(addTrainingName);
+        }
+
+    </script>
+
+    <script>
+
+        function addTrainingCenter() {
+            var code = $('#code').val().trim();
+            var trainingCenterName = $('#trainingCenterName').val().trim();
+            var description = $('#description').val().trim();
+            var isActive = $('#isActive').is(":checked");
+
+            $.post("@Url.Action("AddTrainingCenter", "Dossier")", { code: code, trainingCenterName: trainingCenterName, description: description, isActive: isActive })
+                .done(function (result) {
+                    HideModalDialog();
+                    if (result === 'ok') {
+                        setTimeout(function () { window.location.href = '@Url.Action("AddTraining", "Dossier", new { personId = Model.PersonId})'; }, 0);
+                    }
+                    else {
+                        HideModalDialog();
+                    }
+                })
+                .fail(function (error) {
+                    HideModalDialog();
+                });
+        }
+
+        function showTrainingCenterForm() {
+            ShowModalDialog("Добавяне на обучителен център към номенклатурата", TemplateToHtml('#addTrainingCenterTemplate'));
+            modalPopUpValidation(addTrainingCenter);
+        }
+
+    </script>
+    <script>
+        $("#DateStart").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var startDate = new Date(selected.date.valueOf());
+                $('#DateEnd').datepicker('setStartDate', startDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#DateEnd').datepicker('setStartDate', null);
+            });
+
+        $("#DateEnd").datepicker({
+            format: 'dd.mm.yyyy',
+            autoclose: true,
+        })
+            .on('changeDate', function (selected) {
+                var endDate = new Date(selected.date.valueOf());
+                $('#DateStart').datepicker('setEndDate', endDate);
+            })
+            .on('clearDate', function (selected) {
+                $('#DateStart').datepicker('setEndDate', null);
+            });
+    </script>
+}

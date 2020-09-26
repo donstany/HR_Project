@@ -1,0 +1,168 @@
+﻿@model IOWebFramework.Core.Models.Attachments.AttachedDocumentViewModel
+<style>
+    #_modal .btn-file label {
+        margin-bottom: 0
+    }
+
+    /*Auto complete into Modal*/
+    .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
+        z-index: 20000;
+    }
+</style>
+
+<div id="attachedDocument">
+    <form id="FileUploadForm" action="@Url.Action("AddAttachedDocument", "File")" method="post" enctype="multipart/form-data">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.FileContentId)
+        @Html.HiddenFor(m => m.DocumentId)
+        @Html.HiddenFor(m => m.DocumentType)
+        @Html.HiddenFor(m => m.IsActive)
+        @Html.HiddenFor(m => m.IsEditMode)
+
+        @*@Html.EditorFor(m => m.AttachmentTypeId, "GenericDropDown")*@
+        <div class="actions hidden">
+            <div class="row">
+                <div class="col-md-12 number-field">
+                    @Html.EditorFor(m => m.Number)
+                    <span class="text-danger validation-message" id="NumberValidation"></span>
+                </div>
+                <div class="col-md-12">
+                    @Html.EditorFor(m => m.Date)
+                    <span class="text-danger validation-message" id="DateValidation"></span>
+                </div>
+                <div class="col-md-12 description-field">
+                    @Html.EditorFor(m => m.Description, "StringTextArea")
+                    <span class="text-danger validation-message" id="DescriptionValidation"></span>
+                </div>
+            </div>
+        </div>
+        @* Файл с чекче *@
+        <div class="modal-footer">
+            @*<div class="col-md-8  file__toggable hidden">
+                    <div class="btn-group">
+                        <a class="btn btn-file btn-info">
+                            <input type="file" id="upload_file" name="upload_file" class="form-control" />
+                            <label for="upload_file" class="margin-bottom-none"><i class="fa fa-search"></i> <span id="FileNameLabel">Избери файл</span></label>
+                        </a>
+                        <button class="btn btn-danger file__close hidden">
+                            <i class="fa fa-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success" id="saveBtn"><i class="fa fa-check-circle" aria-hidden="true"></i> Прикачи</button>
+                </div>*@
+
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="upload_file" name="upload_file">
+                    <label class="custom-file-label" for="upload_file" id="FileNameLabel"><i class="fa fa-search"></i> Избери файл</label>
+                </div>
+                <div class="input-group-append">
+                    <button type="submit" class="input-group-text btn btn-success" id="saveBtn"> Прикачи</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <span id="errorMessage" class="text-xs-center"></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).on('change', '#upload_file', function () { //изписва името на избрания файл в обособеното поле
+        if ($('#upload_file').val() !== "") {
+            var fileNameArray = $('#upload_file').val().split(/[\\\/]+/);
+            var fileName = fileNameArray[fileNameArray.length - 1];
+            if (fileName.length > 30) {
+                fileName = fileName.substring(0, 29) + '...';
+            }
+            $('#FileNameLabel').text(fileName);
+        } else {
+            $('#FileNameLabel').text(" Избери файл");
+        }
+    });
+
+    //$(document).on('change', '#attachedDocument #HasFile', function (e) {
+    //    ToggleHasFile();
+    //});
+
+    function ToggleHasFile() {
+        if ($('#attachedDocument #HasFile').is(':checked')) {
+            $('#attachedDocument .file__toggable').removeClass('hidden').show();
+        } else {
+            $('#attachedDocument .file__toggable').addClass('hidden').hide();
+        }
+    }
+
+    $(document).on('click', '#attachedDocument #addDocumentModalBtn', function (e) {
+        $('#attachedDocument .validation-message').text("");
+        $('#attachedDocument #Number').val("");
+        $('#attachedDocument #Description').val("");
+        $('#attachedDocument #Date').val("");
+    });
+
+    function ValidateForm() {
+        $('#attachedDocument .validation-message').text("");
+        if ($('#attachedDocument #Date').val() === "") {
+            $('#attachedDocument #DateValidation').text("Моля въведете 'Дата'");
+        }
+        if ($('#attachedDocument #Description').val() === "") {
+            $('#attachedDocument #DescriptionValidation').text("Моля въведете 'Описание'");
+        }
+        if ($('#attachedDocument #Number').val() === "") {
+            $('#attachedDocument #NumberValidation').text("Моля въведете 'Номер'");
+        }
+
+        var attachedDocument_isValid = true;
+        $('#attachedDocument .validation-message').each(function (index, element) {
+            if ($(element).text() !== "") {
+                attachedDocument_isValid = false;
+            }
+        })
+        return attachedDocument_isValid;
+    };
+
+    $(document).on('change.upload_file', '#upload_file', function (e) {
+        var attachedDocument_value = e.target.value;
+        $('.file__toggable .file__close')[attachedDocument_value ? 'removeClass' : 'addClass']('hidden');
+    });
+    $(document).on('click.file__close', '.file__toggable .file__close', function (e) {
+        $('.file__toggable #upload_file').val('').trigger('change');
+    });
+
+    $(function () {
+        ReInitPluggins();
+
+        $('#attachedDocument #FileUploadForm').ajaxForm({
+            beforeSend: function (xhr) {
+                debugger;
+                $('#attachedDocument #errorMessage').text('').css('background', '').css('color', 'white').removeClass("form-control");
+                $('#attachedDocument #saveBtn').hide();
+
+                var attachedDocument_isValid = ValidateForm();
+
+                if (!attachedDocument_isValid) {
+                    xhr.abort();
+                    $('#attachedDocument #saveBtn').show();
+                }
+            },
+            complete: function (xhr) {
+                debugger;
+                $('#attachedDocument #saveBtn').show();
+                if (xhr.responseText === "OK") {
+                    ReloadFiles();
+                    $('.modal.master-modal').modal('hide');
+                    //HideModalDialog();
+                    messageHelper.ShowSuccessMessage("Прикачения документ е зареден успешно.");
+                    window.scrollTo(0, 0);
+                } else {
+                    $('#attachedDocument #errorMessage').text(xhr.responseText).css('background', 'red').css('color', 'white').addClass("form-control");
+                }
+            }
+        });
+    });
+</script>
+
