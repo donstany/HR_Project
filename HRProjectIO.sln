@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOWebFramework", "IOWebFramework\IOWebFramework.csproj", "{629A8E23-E233-43BE-8755-2A3616A726F2}"
 EndProject
@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOWebFrameworkApplicationSe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeveloperNotes", "DeveloperNotes", "{9FD6DA90-616D-4226-8ED4-D199CCD2A192}"
 	ProjectSection(SolutionItems) = preProject
-		ReadMe.txt = ReadMe.txt
+		CheetSheetEFMigration.txt = CheetSheetEFMigration.txt
 	EndProjectSection
 EndProject
 Global

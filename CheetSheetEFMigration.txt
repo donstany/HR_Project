@@ -1,0 +1,40 @@
+Starting the migration in the respective ENVIRONMENT:
+
+	1. In the Package Manager Console, set the environment variables.
+		1.1. Check if the Default Project is set to IOWebFramework.Infrastructure
+	
+		PM> $env:ASPNETCORE_ENVIRONMENT='QA'
+			or $env:ASPNETCORE_ENVIRONMENT='Development'
+			or $env:ASPNETCORE_ENVIRONMENT='Production'
+
+	2. Check which is the active connection string to the database with the -whatif parameter.
+		
+		PM>drop-Database -context ApplicationDbContext -whatif
+	
+		Build started...
+		Build succeeded.
+		What if: Performing the operation "Drop-Database" on target "database 'io_hr_project_DEV' on server 'tcp://10.240.145.54:5432'".
+
+	3.  Drop the database with the active connection string and context
+		drop-Database -context ApplicationDbContext
+
+	4.  Create a new database
+		 Update-Database -context ApplicationDbContext
+		 Update-Database -context CdnDbContext
+	
+	5. Seed the database with data.
+		5.1. Ensure that the startup profile in VS is the environment you want to start
+		5.2. Start the IOWebFramework project
+	----------------------
+	 I. Adding a Migration
+		I.1. Ensure that your startup project is IOWebFramework
+		I.2. In the dropdown menu of the Package Manager Console, select IOWebFramework.Infrastructure as the Default Project
+	 Add-Migration AddColumnInTable -Context ApplicationDbContext
+	 
+	 II. Removing a Migration with Context.
+	 Remove-Migration -Context ApplicationDbContext
+
+	 III. Applying a Migration with Context
+	 Update-database -Context ApplicationDbContext
+
+
